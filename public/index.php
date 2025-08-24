@@ -5,6 +5,7 @@
 declare(strict_types=1);
 
 require_once __DIR__ . '/../app/auth.php';
+require_once __DIR__ . '/../app/security.php';
 require_once __DIR__ . '/../app/helpers.php';
 
 // Start session for authentication
@@ -96,7 +97,7 @@ $page_title = 'Appeal Prospect MVP - Legal Judgment Analysis';
                     </div>
                     <h5 class="card-title">2. AI Analysis</h5>
                     <p class="card-text">
-                        Our GPT-4o-mini model analyzes the judgment using specialized legal prompts
+                        Our AI model analyzes the judgment.
                     </p>
                 </div>
             </div>

@@ -6,6 +6,7 @@ declare(strict_types=1);
 
 require_once __DIR__ . '/db.php';
 require_once __DIR__ . '/auth.php';
+require_once __DIR__ . '/security.php';
 
 /**
  * PDF Parser class for extracting text from uploaded files
@@ -37,15 +38,21 @@ class PDFParser
     public function processUploadedFile(array $file, string $case_name, int $user_id): array
     {
         try {
-            // Validate file
-            $validation = $this->validateFile($file);
+            // Validate file using security functions
+            $validation = validate_file_upload($file);
             if (!$validation['valid']) {
+                log_security_event('file_upload_validation_failed', [
+                    'user_id' => $user_id,
+                    'filename' => $file['name'] ?? 'unknown',
+                    'error' => $validation['error']
+                ]);
                 return ['success' => false, 'error' => $validation['error']];
             }
             
             // Generate secure filename
             $file_info = pathinfo($file['name']);
-            $secure_filename = $this->generateSecureFilename($file_info['extension'] ?? '');
+            $extension = $file_info['extension'] ?? '';
+            $secure_filename = generate_secure_filename($file['name']);
             $upload_path = $this->upload_dir . $user_id . '/' . $secure_filename;
             
             // Create user directory if needed
@@ -111,8 +118,14 @@ class PDFParser
     public function processTextInput(string $text, string $case_name, int $user_id): array
     {
         try {
+            // Validate case name using security functions
+            $case_validation = validate_case_name($case_name);
+            if (!$case_validation['valid']) {
+                return ['success' => false, 'error' => $case_validation['error']];
+            }
+            
             // Clean and validate text
-            $cleaned_text = $this->cleanText($text);
+            $cleaned_text = sanitize_text_content($text);
             
             if (strlen($cleaned_text) < 100) {
                 return ['success' => false, 'error' => 'Text must be at least 100 characters long'];

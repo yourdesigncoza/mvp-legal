@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/10.5/phpunit.xsd"
+         bootstrap="tests/bootstrap.php"
+         cacheDirectory=".phpunit.cache"
+         executionOrder="depends,defects"
+         requireCoverageMetadata="true"
+         beStrictAboutCoverageMetadata="true"
+         beStrictAboutOutputDuringTests="true"
+         failOnRisky="true"
+         failOnWarning="true"
+         stopOnFailure="false"
+         colors="true"
+         testdox="true">
+    
+    <testsuites>
+        <testsuite name="Unit Tests">
+            <directory>tests/Unit</directory>
+        </testsuite>
+        <testsuite name="Integration Tests">
+            <directory>tests/Integration</directory>
+        </testsuite>
+        <testsuite name="Functional Tests">
+            <directory>tests/Functional</directory>
+        </testsuite>
+        <testsuite name="Security Tests">
+            <directory>tests/Security</directory>
+        </testsuite>
+    </testsuites>
+    
+    <source>
+        <include>
+            <directory>app</directory>
+            <directory>public</directory>
+        </include>
+        <exclude>
+            <directory>app/templates</directory>
+            <file>app/config.php</file>
+        </exclude>
+    </source>
+    
+    <coverage includeUncoveredFiles="true"
+              processUncoveredFiles="true"
+              pathCoverage="false"
+              ignoreDeprecatedCodeUnits="true"
+              disableCodeCoverageIgnore="true">
+        <report>
+            <html outputDirectory="tests/coverage" lowUpperBound="50" highLowerBound="80"/>
+            <text outputFile="php://stdout" showUncoveredFiles="false"/>
+        </report>
+    </coverage>
+    
+    <logging>
+        <junit outputFile="tests/results/junit.xml"/>
+        <teamcity outputFile="tests/results/teamcity.txt"/>
+    </logging>
+    
+    <php>
+        <env name="APP_ENV" value="testing"/>
+        <env name="DATABASE_URL" value="sqlite:///:memory:"/>
+        <ini name="display_errors" value="1"/>
+        <ini name="error_reporting" value="-1"/>
+        <ini name="memory_limit" value="512M"/>
+    </php>
+</phpunit>

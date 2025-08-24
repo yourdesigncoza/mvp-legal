@@ -5,16 +5,21 @@
 declare(strict_types=1);
 
 require_once __DIR__ . '/db.php';
+require_once __DIR__ . '/security.php';
 
 /**
  * Start secure session with proper configuration
  */
 function start_session(): void {
     if (session_status() === PHP_SESSION_NONE) {
+        // Set comprehensive security headers
+        set_security_headers();
+        
         // Configure secure session settings
         ini_set('session.cookie_httponly', '1');
         ini_set('session.cookie_samesite', 'Lax');
         ini_set('session.use_only_cookies', '1');
+        ini_set('session.gc_maxlifetime', '86400'); // 24 hours
         
         // Set secure flag if using HTTPS
         if (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') {
@@ -23,9 +28,39 @@ function start_session(): void {
         
         session_start();
         
+        // Check session security and timeout
+        if (is_logged_in()) {
+            if (!validate_session_security() || check_session_timeout()) {
+                log_security_event('session_security_violation', [
+                    'user_id' => current_user_id(),
+                    'reason' => !validate_session_security() ? 'security_validation_failed' : 'session_timeout'
+                ]);
+                logout_user();
+                return;
+            }
+            
+            // Update session activity
+            update_session_activity();
+            
+            // Regenerate session ID periodically
+            if (!isset($_SESSION['last_regeneration']) || 
+                time() - $_SESSION['last_regeneration'] > 300) { // Every 5 minutes
+                regenerate_secure_session_id();
+                $_SESSION['last_regeneration'] = time();
+            }
+        }
+        
         // Generate CSRF token if not exists
         if (!isset($_SESSION['csrf_token'])) {
             $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+            $_SESSION['csrf_token_time'] = time();
+        }
+        
+        // Regenerate CSRF token periodically
+        if (isset($_SESSION['csrf_token_time']) && 
+            time() - $_SESSION['csrf_token_time'] > 3600) { // Every hour
+            $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+            $_SESSION['csrf_token_time'] = time();
         }
     }
 }
@@ -111,17 +146,48 @@ function verify_password(string $password, string $hash): bool {
  * Login user with email and password
  */
 function login_user(string $email, string $password): bool {
+    // Validate inputs
+    $email_validation = validate_email($email);
+    if (!$email_validation['valid']) {
+        log_security_event('login_attempt_invalid_email', ['email' => $email]);
+        return false;
+    }
+    
+    $email = $email_validation['value'];
+    
+    // Check rate limiting
+    $rate_limit_check = check_login_rate_limit($email);
+    if (!$rate_limit_check['allowed']) {
+        log_security_event('login_rate_limit_exceeded', ['email' => $email]);
+        return false;
+    }
+    
+    // Validate request origin
+    if (!validate_request_origin()) {
+        log_security_event('login_invalid_origin', ['email' => $email]);
+        record_failed_login_attempt($email);
+        return false;
+    }
+    
     $user = db_query_single(
         "SELECT id, email, password_hash, name, is_admin FROM users WHERE email = ?",
         [$email]
     );
     
     if (!$user || !verify_password($password, $user['password_hash'])) {
+        record_failed_login_attempt($email);
+        log_security_event('login_failed', [
+            'email' => $email,
+            'user_exists' => $user ? true : false
+        ]);
         return false;
     }
     
+    // Clear failed login attempts on successful login
+    clear_login_attempts($email);
+    
     // Regenerate session ID for security
-    session_regenerate_id(true);
+    regenerate_secure_session_id();
     
     // Set session variables
     $_SESSION['user_id'] = $user['id'];
@@ -129,11 +195,20 @@ function login_user(string $email, string $password): bool {
     $_SESSION['user_name'] = $user['name'];
     $_SESSION['user_email'] = $user['email'];
     
+    // Initialize session security
+    initialize_session_security();
+    
     // Update last login timestamp
     db_execute(
         "UPDATE users SET last_login_at = NOW() WHERE id = ?",
         [$user['id']]
     );
+    
+    // Log successful login
+    log_security_event('login_successful', [
+        'user_id' => $user['id'],
+        'email' => $email
+    ]);
     
     return true;
 }
@@ -162,6 +237,29 @@ function logout_user(): void {
  * Register new user
  */
 function register_user(string $email, string $password, string $name): bool {
+    // Validate inputs
+    $email_validation = validate_email($email);
+    if (!$email_validation['valid']) {
+        log_security_event('registration_invalid_email', ['email' => $email]);
+        return false;
+    }
+    
+    $password_validation = validate_password($password, true);
+    if (!$password_validation['valid']) {
+        log_security_event('registration_weak_password', ['email' => $email_validation['value']]);
+        return false;
+    }
+    
+    $name_validation = validate_name($name);
+    if (!$name_validation['valid']) {
+        log_security_event('registration_invalid_name', ['email' => $email_validation['value']]);
+        return false;
+    }
+    
+    // Use validated values
+    $email = $email_validation['value'];
+    $name = $name_validation['value'];
+    
     // Check if email already exists
     $existing = db_query_single(
         "SELECT id FROM users WHERE email = ?",
@@ -169,6 +267,7 @@ function register_user(string $email, string $password, string $name): bool {
     );
     
     if ($existing) {
+        log_security_event('registration_duplicate_email', ['email' => $email]);
         return false; // Email already exists
     }
     
@@ -195,7 +294,17 @@ function generate_csrf_token(): string {
  * Verify CSRF token
  */
 function verify_csrf_token(string $token): bool {
-    return isset($_SESSION['csrf_token']) && hash_equals($_SESSION['csrf_token'], $token);
+    if (!isset($_SESSION['csrf_token']) || empty($token)) {
+        return false;
+    }
+    
+    // Check token age (1 hour max)
+    if (isset($_SESSION['csrf_token_time']) && 
+        time() - $_SESSION['csrf_token_time'] > 3600) {
+        return false;
+    }
+    
+    return hash_equals($_SESSION['csrf_token'], $token);
 }
 
 /**
@@ -203,7 +312,7 @@ function verify_csrf_token(string $token): bool {
  */
 function csrf_field(): string {
     $token = generate_csrf_token();
-    return '<input type="hidden" name="csrf_token" value="' . htmlspecialchars($token) . '">';
+    return '<input type="hidden" name="csrf_token" value="' . sanitize_html_output($token) . '">';
 }
 
 /**
@@ -211,7 +320,16 @@ function csrf_field(): string {
  */
 function validate_csrf(): bool {
     $token = $_POST['csrf_token'] ?? '';
-    return verify_csrf_token($token);
+    
+    if (!verify_csrf_token($token)) {
+        log_security_event('csrf_token_invalid', [
+            'user_id' => current_user_id(),
+            'request_uri' => $_SERVER['REQUEST_URI'] ?? 'unknown'
+        ]);
+        return false;
+    }
+    
+    return true;
 }
 
 /**

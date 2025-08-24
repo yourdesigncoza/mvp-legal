@@ -5,6 +5,7 @@
 declare(strict_types=1);
 
 require_once __DIR__ . '/../app/auth.php';
+require_once __DIR__ . '/../app/security.php';
 require_once __DIR__ . '/../app/helpers.php';
 
 // Start session
@@ -36,25 +37,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $form_data['password'] = $_POST['password'] ?? '';
         $form_data['confirm_password'] = $_POST['confirm_password'] ?? '';
         
-        // Validation
-        if (empty($form_data['name'])) {
-            $errors['name'] = 'Full name is required';
-        } elseif (strlen($form_data['name']) < 2) {
-            $errors['name'] = 'Full name must be at least 2 characters';
+        // Validation using security functions
+        $name_validation = validate_name($form_data['name']);
+        if (!$name_validation['valid']) {
+            $errors['name'] = $name_validation['error'];
+        } else {
+            $form_data['name'] = $name_validation['value']; // Use sanitized value
         }
         
-        if (empty($form_data['email'])) {
-            $errors['email'] = 'Email address is required';
-        } elseif (!filter_var($form_data['email'], FILTER_VALIDATE_EMAIL)) {
-            $errors['email'] = 'Please enter a valid email address';
+        $email_validation = validate_email($form_data['email']);
+        if (!$email_validation['valid']) {
+            $errors['email'] = $email_validation['error'];
+        } else {
+            $form_data['email'] = $email_validation['value']; // Use sanitized value
         }
         
-        if (empty($form_data['password'])) {
-            $errors['password'] = 'Password is required';
-        } elseif (strlen($form_data['password']) < 8) {
-            $errors['password'] = 'Password must be at least 8 characters long';
-        } elseif (!preg_match('/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/', $form_data['password'])) {
-            $errors['password'] = 'Password must contain at least one uppercase letter, one lowercase letter, and one number';
+        $password_validation = validate_password($form_data['password'], true); // Enforce strong password
+        if (!$password_validation['valid']) {
+            $errors['password'] = $password_validation['error'];
         }
         
         if (empty($form_data['confirm_password'])) {

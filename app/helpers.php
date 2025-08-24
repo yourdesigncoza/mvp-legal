@@ -7,6 +7,34 @@
 declare(strict_types=1);
 
 /**
+ * Sanitize output for HTML context to prevent XSS
+ */
+function e(string $value): string {
+    return htmlspecialchars($value, ENT_QUOTES | ENT_HTML5, 'UTF-8');
+}
+
+/**
+ * Sanitize output for HTML attribute context
+ */
+function attr(string $value): string {
+    return htmlspecialchars($value, ENT_QUOTES | ENT_HTML5, 'UTF-8');
+}
+
+/**
+ * Sanitize output for JavaScript context
+ */
+function js(string $value): string {
+    return json_encode($value, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP | JSON_UNESCAPED_UNICODE);
+}
+
+/**
+ * Sanitize for URL context
+ */
+function url_safe(string $value): string {
+    return urlencode($value);
+}
+
+/**
  * Render a template with variables
  */
 function render_template(string $template, array $variables = []): void {
@@ -38,13 +66,65 @@ function render_page(string $content, array $options = []): void {
 }
 
 /**
- * Set flash message
+ * Set flash message with enhanced features
  */
-function set_flash_message(string $message, string $type = 'info'): void {
-    $_SESSION['flash_message'] = [
+function set_flash_message(string $message, string $type = 'info', array $options = []): void {
+    $_SESSION['flash_messages'][] = [
+        'id' => uniqid('flash_'),
         'message' => $message,
-        'type' => $type
+        'type' => $type,
+        'dismissible' => $options['dismissible'] ?? true,
+        'persistent' => $options['persistent'] ?? false,
+        'icon' => $options['icon'] ?? null,
+        'timeout' => $options['timeout'] ?? null,
+        'actions' => $options['actions'] ?? [],
+        'created_at' => time()
     ];
+}
+
+/**
+ * Get and clear flash messages
+ */
+function get_flash_messages(): array {
+    $messages = $_SESSION['flash_messages'] ?? [];
+    
+    // Remove non-persistent messages
+    $_SESSION['flash_messages'] = array_filter($messages, function($msg) {
+        return $msg['persistent'] ?? false;
+    });
+    
+    return $messages;
+}
+
+/**
+ * Check if flash messages exist
+ */
+function has_flash_messages(): bool {
+    return !empty($_SESSION['flash_messages']);
+}
+
+/**
+ * Clear all flash messages
+ */
+function clear_flash_messages(): void {
+    unset($_SESSION['flash_messages']);
+}
+
+/**
+ * Set multiple flash messages at once
+ */
+function set_flash_messages(array $messages): void {
+    foreach ($messages as $message) {
+        if (is_array($message)) {
+            set_flash_message(
+                $message['message'],
+                $message['type'] ?? 'info',
+                $message['options'] ?? []
+            );
+        } else {
+            set_flash_message($message);
+        }
+    }
 }
 
 /**
@@ -78,7 +158,7 @@ function phoenix_alert(string $message, string $type = 'info', bool $dismissible
     return "
     <div class=\"alert {$class}{$dismissible_class}\" role=\"alert\">
         <i class=\"{$icon} me-2\"></i>
-        {$message}
+        " . e($message) . "
         {$dismiss_button}
     </div>";
 }
@@ -98,7 +178,7 @@ function phoenix_badge(string $text, string $type = 'primary', bool $with_icon =
     
     $icon_html = $with_icon && isset($icons[$type]) ? "<i class=\"{$icons[$type]} me-1\"></i>" : '';
     
-    return "<span class=\"badge badge-phoenix badge-phoenix-{$type}\">{$icon_html}{$text}</span>";
+    return "<span class=\"badge badge-phoenix badge-phoenix-{$type}\">{$icon_html}" . e($text) . "</span>";
 }
 
 /**

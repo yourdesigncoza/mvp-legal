@@ -5,6 +5,7 @@
 declare(strict_types=1);
 
 require_once __DIR__ . '/../app/auth.php';
+require_once __DIR__ . '/../app/security.php';
 require_once __DIR__ . '/../app/helpers.php';
 require_once __DIR__ . '/../app/settings.php';
 require_once __DIR__ . '/../app/pdf_parser.php';
@@ -31,11 +32,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $form_data['case_name'] = trim($_POST['case_name'] ?? '');
         $form_data['judgment_text'] = trim($_POST['judgment_text'] ?? '');
         
-        // Validate case name
-        if (empty($form_data['case_name'])) {
-            $errors['case_name'] = 'Case name is required';
-        } elseif (strlen($form_data['case_name']) < 3) {
-            $errors['case_name'] = 'Case name must be at least 3 characters';
+        // Validate case name using security function
+        $case_validation = validate_case_name($form_data['case_name']);
+        if (!$case_validation['valid']) {
+            $errors['case_name'] = $case_validation['error'];
+        } else {
+            $form_data['case_name'] = $case_validation['value']; // Use sanitized value
         }
         
         if ($form_data['upload_type'] === 'file') {
@@ -84,9 +86,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     if ($result['success']) {
                         $success_message = "File processed successfully! Extracted " . number_format($result['text_length']) . " characters of text.";
                         
-                        // Redirect to results page (when implemented)
-                        // header('Location: /analyze.php?case_id=' . $result['case_id']);
-                        // exit;
+                        // Redirect to analysis page
+                        header('Location: /analyze.php?case_id=' . $result['case_id']);
+                        exit;
                     } else {
                         $errors['general'] = $result['error'];
                     }
@@ -97,9 +99,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     if ($result['success']) {
                         $success_message = "Text processed successfully! Ready for analysis (" . number_format($result['text_length']) . " characters).";
                         
-                        // Redirect to results page (when implemented)
-                        // header('Location: /analyze.php?case_id=' . $result['case_id']);
-                        // exit;
+                        // Redirect to analysis page
+                        header('Location: /analyze.php?case_id=' . $result['case_id']);
+                        exit;
                     } else {
                         $errors['general'] = $result['error'];
                     }
