@@ -1,0 +1,57 @@
+# Appeal Prospect MVP - Root .htaccess
+# Security configuration and URL rewriting
+
+# Security Headers
+Header always set X-Content-Type-Options nosniff
+Header always set X-Frame-Options DENY
+Header always set X-XSS-Protection "1; mode=block"
+Header always set Referrer-Policy "strict-origin-when-cross-origin"
+
+# Hide server information
+ServerTokens Prod
+Header unset Server
+
+# Prevent access to sensitive files
+<FilesMatch "\.(env|ini|log|sql|md)$">
+    Order Allow,Deny
+    Deny from all
+</FilesMatch>
+
+# Protect configuration and include files
+<FilesMatch "^(config|db|auth|settings)\.php$">
+    Order Allow,Deny
+    Deny from all
+</FilesMatch>
+
+# Prevent directory browsing
+Options -Indexes
+
+# Enable URL rewriting (if needed for clean URLs)
+RewriteEngine On
+
+# Force HTTPS in production (uncomment when deploying)
+# RewriteCond %{HTTPS} off
+# RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+# Redirect to public directory for web requests
+RewriteCond %{REQUEST_URI} !^/public/
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*)$ /public/$1 [L]
+
+# PHP Security Settings
+php_flag display_errors Off
+php_flag log_errors On
+php_value error_log /var/log/appeal_prospect_errors.log
+
+# File Upload Restrictions
+php_value upload_max_filesize 10M
+php_value post_max_size 12M
+php_value max_execution_time 300
+php_value max_input_time 300
+
+# Session Security
+php_value session.cookie_httponly 1
+php_value session.cookie_secure 1
+php_value session.use_only_cookies 1
+php_value session.cookie_samesite Lax

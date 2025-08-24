@@ -1,0 +1,17 @@
+# Appeal Prospect MVP - App Directory Protection
+# Deny all direct web access to backend files
+
+Order Deny,Allow
+Deny from all
+
+# Prevent execution of any scripts
+<FilesMatch "\.(php|php3|php4|php5|phtml|pl|py|jsp|asp|sh|cgi)$">
+    Order Allow,Deny
+    Deny from all
+</FilesMatch>
+
+# Additional protection for sensitive files
+<FilesMatch "\.(inc|conf|config|log|sql|md|json|yml|yaml)$">
+    Order Allow,Deny
+    Deny from all
+</FilesMatch>

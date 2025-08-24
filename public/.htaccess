@@ -1,0 +1,28 @@
+# Appeal Prospect MVP - Public Directory
+# Clean URLs and security for web-accessible files
+
+RewriteEngine On
+
+# Remove .php extension from URLs (optional clean URLs)
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^([^.]+)$ $1.php [NC,L]
+
+# Security for PHP files that should not be directly accessible
+<Files "config.php">
+    Order Allow,Deny
+    Deny from all
+</Files>
+
+# Cache control for assets
+<FilesMatch "\.(css|js|png|jpg|jpeg|gif|ico|svg)$">
+    ExpiresActive On
+    ExpiresDefault "access plus 1 month"
+    Header append Cache-Control "public"
+</FilesMatch>
+
+# Prevent access to backup files
+<FilesMatch "\.(bak|backup|old|orig|tmp)$">
+    Order Allow,Deny
+    Deny from all
+</FilesMatch>
