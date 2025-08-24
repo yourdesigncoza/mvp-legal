@@ -162,7 +162,6 @@ function processAnalysis(array $case_data, array &$status): ?array
 <?php include __DIR__ . '/../app/templates/header.php'; ?>
 
 <div class="container-fluid px-0">
-    <?php include __DIR__ . '/../app/templates/navbar.php'; ?>
     
     <div class="content">
         <div class="container-fluid px-6 py-4">
@@ -183,7 +182,7 @@ function processAnalysis(array $case_data, array &$status): ?array
                     </p>
                 </div>
                 <div class="col-auto">
-                    <a href="/upload.php" class="btn btn-outline-secondary">
+                    <a href="<?= app_url('upload.php') ?>" class="btn btn-outline-secondary">
                         <i class="fas fa-upload me-2"></i>
                         Upload New
                     </a>
@@ -193,7 +192,7 @@ function processAnalysis(array $case_data, array &$status): ?array
             <?php if (!empty($errors)): ?>
                 <!-- Error Messages -->
                 <?php foreach ($errors as $error): ?>
-                    <div class="alert alert-danger border-0" role="alert">
+                    <div class="alert alert-subtle-danger border-0" role="alert">
                         <div class="d-flex">
                             <i class="fas fa-exclamation-circle fs-4 me-3"></i>
                             <div>
@@ -205,11 +204,11 @@ function processAnalysis(array $case_data, array &$status): ?array
                 <?php endforeach; ?>
                 
                 <div class="text-center mt-4">
-                    <a href="/upload.php" class="btn btn-primary">
+                    <a href="<?= app_url('upload.php') ?>" class="btn btn-primary">
                         <i class="fas fa-upload me-2"></i>
                         Upload New Case
                     </a>
-                    <a href="/my-cases.php" class="btn btn-outline-secondary ms-2">
+                    <a href="/my-cases.php" class="btn btn-subtle-secondary ms-2">
                         <i class="fas fa-folder me-2"></i>
                         My Cases
                     </a>
@@ -220,7 +219,7 @@ function processAnalysis(array $case_data, array &$status): ?array
                 <?php if ($analysis_result['success']): ?>
                     
                     <!-- Success Message -->
-                    <div class="alert alert-success border-0" role="alert">
+                    <div class="alert alert-subtle-success border-0" role="alert">
                         <div class="d-flex">
                             <i class="fas fa-check-circle fs-4 me-3"></i>
                             <div>
@@ -305,7 +304,7 @@ function processAnalysis(array $case_data, array &$status): ?array
                     
                 <?php else: ?>
                     <!-- Analysis Failed -->
-                    <div class="alert alert-danger border-0" role="alert">
+                    <div class="alert alert-subtle-danger border-0" role="alert">
                         <div class="d-flex">
                             <i class="fas fa-exclamation-triangle fs-4 me-3"></i>
                             <div>
@@ -342,7 +341,7 @@ function processAnalysis(array $case_data, array &$status): ?array
                             <i class="fas fa-redo me-2"></i>
                             Try Again
                         </button>
-                        <a href="/upload.php" class="btn btn-outline-secondary ms-2">
+                        <a href="<?= app_url('upload.php') ?>" class="btn btn-subtle-secondary ms-2">
                             <i class="fas fa-upload me-2"></i>
                             Upload Different Case
                         </a>
@@ -389,7 +388,7 @@ function processAnalysis(array $case_data, array &$status): ?array
                                     The process typically takes 1-2 minutes.
                                 </p>
                                 
-                                <form method="POST" action="/analyze.php">
+                                <form method="POST" action="<?= app_url('analyze.php') ?>">
                                     <?= csrf_field() ?>
                                     <input type="hidden" name="case_id" value="<?= $case_data['id'] ?>">
                                     
@@ -400,7 +399,7 @@ function processAnalysis(array $case_data, array &$status): ?array
                                 </form>
                                 
                                 <div class="mt-4">
-                                    <a href="/my-cases.php" class="btn btn-outline-secondary">
+                                    <a href="/my-cases.php" class="btn btn-subtle-secondary">
                                         <i class="fas fa-arrow-left me-2"></i>
                                         Back to My Cases
                                     </a>
@@ -455,11 +454,11 @@ function processAnalysis(array $case_data, array &$status): ?array
                     <h4 class="text-body-secondary mt-3 mb-2">No Case Selected</h4>
                     <p class="text-body-tertiary mb-4">Upload a legal judgment to begin analysis</p>
                     
-                    <a href="/upload.php" class="btn btn-primary btn-lg">
+                    <a href="<?= app_url('upload.php') ?>" class="btn btn-primary btn-lg">
                         <i class="fas fa-upload me-2"></i>
                         Upload Judgment
                     </a>
-                    <a href="/my-cases.php" class="btn btn-outline-secondary btn-lg ms-2">
+                    <a href="/my-cases.php" class="btn btn-subtle-secondary btn-lg ms-2">
                         <i class="fas fa-folder me-2"></i>
                         Browse Cases
                     </a>

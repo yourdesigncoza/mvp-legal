@@ -10,7 +10,7 @@ $current_page = basename($_SERVER['PHP_SELF'], '.php');
 <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
     <div class="container-fluid px-6">
         <!-- Brand -->
-        <a class="navbar-brand fw-bolder fs-3 text-primary" href="/index.php">
+        <a class="navbar-brand fw-bolder fs-3 text-primary" href="<?= app_url('index.php') ?>">
             <i class="fas fa-gavel me-2"></i>
             Appeal Prospect
             <span class="badge badge-phoenix badge-phoenix-primary fs-10 ms-2">MVP</span>
@@ -28,7 +28,7 @@ $current_page = basename($_SERVER['PHP_SELF'], '.php');
                     
                     <!-- Upload -->
                     <li class="nav-item">
-                        <a class="nav-link <?= $current_page === 'upload' ? 'active' : '' ?>" href="/upload.php">
+                        <a class="nav-link <?= $current_page === 'upload' ? 'active' : '' ?>" href="<?= app_url('upload.php') ?>">
                             <i class="fas fa-upload me-1"></i>
                             Upload
                         </a>
@@ -36,7 +36,7 @@ $current_page = basename($_SERVER['PHP_SELF'], '.php');
                     
                     <!-- My Cases -->
                     <li class="nav-item">
-                        <a class="nav-link <?= $current_page === 'my-cases' ? 'active' : '' ?>" href="/my-cases.php">
+                        <a class="nav-link <?= $current_page === 'my-cases' ? 'active' : '' ?>" href="<?= app_url('my-cases.php') ?>">
                             <i class="fas fa-folder me-1"></i>
                             My Cases
                         </a>
@@ -44,7 +44,7 @@ $current_page = basename($_SERVER['PHP_SELF'], '.php');
                     
                     <!-- Analysis -->
                     <li class="nav-item">
-                        <a class="nav-link <?= $current_page === 'analyze' ? 'active' : '' ?>" href="/analyze.php">
+                        <a class="nav-link <?= $current_page === 'analyze' ? 'active' : '' ?>" href="<?= app_url('analyze.php') ?>">
                             <i class="fas fa-magic me-1"></i>
                             Analysis
                         </a>
@@ -60,7 +60,7 @@ $current_page = basename($_SERVER['PHP_SELF'], '.php');
                     <!-- Admin Link -->
                     <?php if (current_is_admin()): ?>
                         <li class="nav-item">
-                            <a class="nav-link <?= $current_page === 'admin' ? 'active' : '' ?>" href="/admin.php">
+                            <a class="nav-link <?= $current_page === 'admin' ? 'active' : '' ?>" href="<?= app_url('admin.php') ?>">
                                 <i class="fas fa-cog me-1"></i>
                                 Admin
                             </a>
@@ -75,14 +75,14 @@ $current_page = basename($_SERVER['PHP_SELF'], '.php');
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
                             <li>
-                                <a class="dropdown-item" href="/my-cases.php">
+                                <a class="dropdown-item" href="<?= app_url('my-cases.php') ?>">
                                     <i class="fas fa-folder me-2"></i>
                                     My Cases
                                 </a>
                             </li>
                             <li><hr class="dropdown-divider"></li>
                             <li>
-                                <a class="dropdown-item" href="/logout.php">
+                                <a class="dropdown-item" href="<?= app_url('logout.php') ?>">
                                     <i class="fas fa-sign-out-alt me-2"></i>
                                     Logout
                                 </a>
@@ -94,13 +94,13 @@ $current_page = basename($_SERVER['PHP_SELF'], '.php');
                     
                     <!-- Guest Links -->
                     <li class="nav-item">
-                        <a class="nav-link <?= $current_page === 'login' ? 'active' : '' ?>" href="/login.php">
+                        <a class="nav-link <?= $current_page === 'login' ? 'active' : '' ?>" href="<?= app_url('login.php') ?>">
                             <i class="fas fa-sign-in-alt me-1"></i>
                             Login
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link <?= $current_page === 'register' ? 'active' : '' ?>" href="/register.php">
+                        <a class="nav-link <?= $current_page === 'register' ? 'active' : '' ?>" href="<?= app_url('register.php') ?>">
                             <i class="fas fa-user-plus me-1"></i>
                             Register
                         </a>

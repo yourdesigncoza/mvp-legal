@@ -101,7 +101,6 @@ $page_title = 'My Cases - Appeal Prospect MVP';
 <?php include __DIR__ . '/../app/templates/header.php'; ?>
 
 <div class="container-fluid px-0">
-    <?php include __DIR__ . '/../app/templates/navbar.php'; ?>
     
     <div class="content">
         <div class="container-fluid px-6 py-4">
@@ -118,7 +117,7 @@ $page_title = 'My Cases - Appeal Prospect MVP';
                     </p>
                 </div>
                 <div class="col-auto">
-                    <a href="/upload.php" class="btn btn-primary">
+                    <a href="<?= app_url('upload.php') ?>" class="btn btn-primary">
                         <i class="fas fa-plus me-2"></i>
                         New Analysis
                     </a>
@@ -127,14 +126,14 @@ $page_title = 'My Cases - Appeal Prospect MVP';
 
             <!-- Success/Error Messages -->
             <?php if ($success_message): ?>
-                <div class="alert alert-success border-0" role="alert">
+                <div class="alert alert-subtle-success border-0" role="alert">
                     <i class="fas fa-check-circle me-2"></i>
                     <?= htmlspecialchars($success_message) ?>
                 </div>
             <?php endif; ?>
 
             <?php foreach ($errors as $error): ?>
-                <div class="alert alert-danger border-0" role="alert">
+                <div class="alert alert-subtle-danger border-0" role="alert">
                     <i class="fas fa-exclamation-circle me-2"></i>
                     <?= htmlspecialchars($error) ?>
                 </div>
@@ -218,7 +217,7 @@ $page_title = 'My Cases - Appeal Prospect MVP';
             <!-- Search and Filters -->
             <div class="card shadow-sm mb-4">
                 <div class="card-body">
-                    <form method="GET" action="/my-cases.php" class="row g-3 align-items-end">
+                    <form method="GET" action="<?= app_url('my-cases.php') ?>" class="row g-3 align-items-end">
                         
                         <!-- Search -->
                         <div class="col-md-4">
@@ -277,7 +276,7 @@ $page_title = 'My Cases - Appeal Prospect MVP';
                                     <i class="fas fa-search me-1"></i>
                                     Search
                                 </button>
-                                <a href="/my-cases.php" class="btn btn-outline-secondary">
+                                <a href="/my-cases.php" class="btn btn-subtle-secondary">
                                     <i class="fas fa-times me-1"></i>
                                     Clear
                                 </a>
@@ -301,7 +300,7 @@ $page_title = 'My Cases - Appeal Prospect MVP';
                                 No cases found with the selected filters.
                             <?php endif; ?>
                         </p>
-                        <a href="/my-cases.php" class="btn btn-outline-primary">
+                        <a href="/my-cases.php" class="btn btn-subtle-primary">
                             <i class="fas fa-arrow-left me-2"></i>
                             View All Cases
                         </a>
@@ -312,7 +311,7 @@ $page_title = 'My Cases - Appeal Prospect MVP';
                         <p class="text-body-tertiary mb-4">
                             Upload your first legal judgment to get started with AI-powered analysis.
                         </p>
-                        <a href="/upload.php" class="btn btn-primary btn-lg">
+                        <a href="<?= app_url('upload.php') ?>" class="btn btn-primary btn-lg">
                             <i class="fas fa-upload me-2"></i>
                             Upload First Case
                         </a>
@@ -335,7 +334,7 @@ $page_title = 'My Cases - Appeal Prospect MVP';
                             
                             <!-- Bulk Actions -->
                             <div class="d-flex align-items-center">
-                                <button class="btn btn-outline-danger btn-sm me-2" onclick="showBulkDeleteModal()" id="bulkDeleteBtn" style="display: none;">
+                                <button class="btn btn-subtle-danger btn-sm me-2" onclick="showBulkDeleteModal()" id="bulkDeleteBtn" style="display: none;">
                                     <i class="fas fa-trash me-1"></i>
                                     Delete Selected
                                 </button>
@@ -427,7 +426,7 @@ $page_title = 'My Cases - Appeal Prospect MVP';
                                             </td>
                                             <td>
                                                 <div class="dropdown">
-                                                    <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                                                    <button class="btn btn-sm btn-subtle-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
                                                         <i class="fas fa-ellipsis-v"></i>
                                                     </button>
                                                     <ul class="dropdown-menu">
@@ -551,7 +550,7 @@ $page_title = 'My Cases - Appeal Prospect MVP';
             </div>
             <div class="modal-body">
                 <p>Are you sure you want to delete the case <strong id="deleteCaseName"></strong>?</p>
-                <div class="alert alert-warning border-0">
+                <div class="alert alert-subtle-warning border-0">
                     <small>
                         <i class="fas fa-exclamation-triangle me-1"></i>
                         This action cannot be undone. All analysis results and uploaded files will be permanently deleted.
@@ -587,7 +586,7 @@ $page_title = 'My Cases - Appeal Prospect MVP';
             </div>
             <div class="modal-body">
                 <p>Are you sure you want to delete <span id="bulkDeleteCount">0</span> selected cases?</p>
-                <div class="alert alert-danger border-0">
+                <div class="alert alert-subtle-danger border-0">
                     <small>
                         <i class="fas fa-exclamation-triangle me-1"></i>
                         This action cannot be undone. All analysis results and uploaded files will be permanently deleted.

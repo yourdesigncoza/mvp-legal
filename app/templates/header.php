@@ -8,10 +8,10 @@
     <title><?= isset($page_title) ? $page_title . ' - ' : '' ?>Appeal Prospect MVP</title>
     
     <!-- Favicons -->
-    <link rel="apple-touch-icon" sizes="180x180" href="/assets/img/favicons/apple-touch-icon.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="/assets/img/favicons/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="/assets/img/favicons/favicon-16x16.png">
-    <link rel="shortcut icon" type="image/x-icon" href="/assets/img/favicons/favicon.ico">
+    <link rel="apple-touch-icon" sizes="180x180" href="<?= asset_url('assets/img/favicons/apple-touch-icon.png') ?>">
+    <link rel="icon" type="image/png" sizes="32x32" href="<?= asset_url('assets/img/favicons/favicon-32x32.png') ?>">
+    <link rel="icon" type="image/png" sizes="16x16" href="<?= asset_url('assets/img/favicons/favicon-16x16.png') ?>">
+    <link rel="shortcut icon" type="image/x-icon" href="<?= asset_url('assets/img/favicons/favicon.ico') ?>">
     <meta name="theme-color" content="#ffffff">
     
     <!-- Fonts -->
@@ -24,7 +24,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <!-- Phoenix Bootstrap CSS -->
-    <link href="/assets/css/phoenix-bootstrap.css" type="text/css" rel="stylesheet">
+    <link href="<?= asset_url('assets/css/phoenix-bootstrap.css') ?>" type="text/css" rel="stylesheet">
     
     <!-- Bootstrap 5.3 -->
     <!-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"> -->
@@ -32,7 +32,7 @@
 
 <body>
     <!-- Global Disclaimer -->
-    <div class="alert alert-warning border-0 rounded-0 mb-0 text-center" role="alert">
+    <div class="alert alert-subtle-warning border-0 rounded-0 mb-0 text-center p-1 fs-9" role="alert">
         <i class="fas fa-exclamation-triangle me-2"></i>
         <strong>Demo Only — Not Legal Advice:</strong> This is a demonstration application for educational purposes only.
     </div>
@@ -41,7 +41,7 @@
     <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
         <div class="container">
             <!-- Brand -->
-            <a class="navbar-brand fw-bolder fs-3 text-primary" href="/index.php">
+            <a class="navbar-brand fw-bolder fs-6 text-primary" href="<?= app_url('index.php') ?>">
                 <i class="fas fa-gavel me-2"></i>
                 Appeal Prospect
                 <span class="badge badge-phoenix badge-phoenix-primary fs-10 ms-2">MVP</span>
@@ -54,17 +54,17 @@
 
             <!-- Navigation Links -->
             <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
+                <ul class="navbar-nav ms-auto fs-9">
                     <?php if (function_exists('is_logged_in') && is_logged_in()): ?>
                         <!-- Logged in navigation -->
                         <li class="nav-item">
-                            <a class="nav-link" href="/upload.php">
+                            <a class="nav-link" href="<?= app_url('upload.php') ?>">
                                 <i class="fas fa-upload me-1"></i>
                                 Upload Judgment
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="/my-cases.php">
+                            <a class="nav-link" href="<?= app_url('my-cases.php') ?>">
                                 <i class="fas fa-folder me-1"></i>
                                 My Cases
                             </a>
@@ -72,7 +72,7 @@
                         
                         <?php if (function_exists('current_is_admin') && current_is_admin()): ?>
                         <li class="nav-item">
-                            <a class="nav-link" href="/admin.php">
+                            <a class="nav-link" href="<?= app_url('admin.php') ?>">
                                 <i class="fas fa-cog me-1"></i>
                                 Admin
                             </a>
@@ -86,7 +86,7 @@
                                 <?= isset($_SESSION['user_name']) ? htmlspecialchars($_SESSION['user_name']) : 'User' ?>
                             </a>
                             <ul class="dropdown-menu dropdown-menu-end">
-                                <li><a class="dropdown-item" href="/logout.php">
+                                <li><a class="dropdown-item" href="<?= app_url('logout.php') ?>">
                                     <i class="fas fa-sign-out-alt me-2"></i>
                                     Logout
                                 </a></li>
@@ -95,13 +95,13 @@
                     <?php else: ?>
                         <!-- Guest navigation -->
                         <li class="nav-item">
-                            <a class="nav-link" href="/login.php">
+                            <a class="nav-link" href="<?= app_url('login.php') ?>">
                                 <i class="fas fa-sign-in-alt me-1"></i>
                                 Login
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="btn btn-phoenix-primary ms-2" href="/register.php">
+                            <a class="btn btn-phoenix-primary ms-2" href="<?= app_url('register.php') ?>">
                                 <i class="fas fa-user-plus me-1"></i>
                                 Register
                             </a>

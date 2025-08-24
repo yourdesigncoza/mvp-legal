@@ -16,12 +16,12 @@ if (empty($flash_messages)) {
         <?php
         // Determine alert class
         $alert_classes = [
-            'success' => 'alert-success',
-            'error' => 'alert-danger',
-            'danger' => 'alert-danger', 
-            'warning' => 'alert-warning',
-            'info' => 'alert-info',
-            'primary' => 'alert-primary'
+            'success' => 'alert-subtle-success',
+            'error' => 'alert-subtle-danger',
+            'danger' => 'alert-subtle-danger', 
+            'warning' => 'alert-subtle-warning',
+            'info' => 'alert-subtle-info',
+            'primary' => 'alert-subtle-primary'
         ];
         
         $alert_class = $alert_classes[$flash['type']] ?? 'alert-info';
@@ -65,7 +65,7 @@ if (empty($flash_messages)) {
                             <?php foreach ($flash['actions'] as $action): ?>
                                 <a 
                                     href="<?= attr($action['url'] ?? '#') ?>" 
-                                    class="btn btn-sm <?= attr($action['class'] ?? 'btn-outline-primary') ?> me-2"
+                                    class="btn btn-sm <?= attr($action['class'] ?? 'btn-subtle-primary') ?> me-2"
                                     <?php if (isset($action['onclick'])): ?>
                                         onclick="<?= attr($action['onclick']) ?>"
                                     <?php endif; ?>
@@ -249,16 +249,16 @@ function addFlashMessage(message, type = 'info', options = {}) {
     };
     
     const alertClasses = {
-        'success': 'alert-success',
-        'error': 'alert-danger',
-        'danger': 'alert-danger',
-        'warning': 'alert-warning',
-        'info': 'alert-info',
-        'primary': 'alert-primary'
+        'success': 'alert-subtle-success',
+        'error': 'alert-subtle-danger',
+        'danger': 'alert-subtle-danger',
+        'warning': 'alert-subtle-warning',
+        'info': 'alert-subtle-info',
+        'primary': 'alert-subtle-primary'
     };
     
     const alertHTML = `
-        <div class="alert ${alertClasses[type] || 'alert-info'} alert-dismissible fade show" 
+        <div class="alert ${alertClasses[type] || 'alert-subtle-info'} alert-dismissible fade show" 
              role="alert" id="${id}"
              data-flash-timeout="${options.timeout || ''}"
              data-flash-persistent="${options.persistent ? 'true' : 'false'}">

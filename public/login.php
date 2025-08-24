@@ -12,7 +12,8 @@ start_session();
 
 // Redirect if already logged in
 if (is_logged_in()) {
-    header('Location: /index.php');
+    $r = app_url('index.php');
+    redirect($r);
     exit;
 }
 
@@ -48,7 +49,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (empty($errors)) {
             if (login_user($form_data['email'], $password)) {
                 // Successful login
-                $redirect_to = $_SESSION['redirect_after_login'] ?? '/index.php';
+                $r = app_url('index.php');
+                $redirect_to = $_SESSION['redirect_after_login'] ?? $r;
                 unset($_SESSION['redirect_after_login']);
                 
                 set_flash_message('Welcome back! You have been logged in successfully.', 'success');
@@ -71,7 +73,7 @@ $page_title = 'Login - Appeal Prospect MVP';
             
             <!-- Logo/Brand -->
             <div class="text-center mb-7">
-                <a class="d-flex flex-center text-decoration-none mb-4" href="/index.php">
+                <a class="d-flex flex-center text-decoration-none mb-4" href="<?= app_url('index.php') ?>">
                     <div class="d-flex align-items-center fw-bolder fs-2 d-inline-block text-primary">
                         <i class="fas fa-gavel me-2"></i>
                         Appeal Prospect
@@ -82,7 +84,7 @@ $page_title = 'Login - Appeal Prospect MVP';
             </div>
 
             <!-- Demo Users Info -->
-            <div class="alert alert-info border-0 mb-4" role="alert">
+            <div class="alert alert-subtle-info border-0 mb-4" role="alert">
                 <h6 class="alert-heading mb-2">
                     <i class="fas fa-info-circle me-2"></i>
                     Demo Accounts
@@ -94,12 +96,12 @@ $page_title = 'Login - Appeal Prospect MVP';
             </div>
 
             <!-- Login Form -->
-            <form method="POST" action="/login.php" novalidate>
+            <form method="POST" action="<?= app_url('login.php') ?>" novalidate>
                 <?= csrf_field() ?>
 
                 <!-- Display general errors -->
                 <?php if (isset($errors['general'])): ?>
-                    <div class="alert alert-danger" role="alert">
+                    <div class="alert alert-subtle-danger" role="alert">
                         <i class="fas fa-exclamation-circle me-2"></i>
                         <?= htmlspecialchars($errors['general']) ?>
                     </div>
@@ -184,7 +186,7 @@ $page_title = 'Login - Appeal Prospect MVP';
                 <!-- Register Link -->
                 <div class="text-center">
                     <span class="fs-9">Don't have an account? </span>
-                    <a class="fs-9 fw-bold text-decoration-none" href="/register.php">
+                    <a class="fs-9 fw-bold text-decoration-none" href="<?= app_url('register.php') ?>">
                         Create one here
                     </a>
                 </div>
@@ -197,11 +199,11 @@ $page_title = 'Login - Appeal Prospect MVP';
                     <small class="text-body-tertiary">Quick Demo Login</small>
                 </div>
                 <div class="d-flex gap-2 justify-content-center">
-                    <button class="btn btn-outline-primary btn-sm" onclick="quickLogin('admin@example.com', 'admin123')">
+                    <button class="btn btn-subtle-primary btn-sm" onclick="quickLogin('admin@example.com', 'admin123')">
                         <i class="fas fa-user-shield me-1"></i>
                         Admin
                     </button>
-                    <button class="btn btn-outline-secondary btn-sm" onclick="quickLogin('demo@example.com', 'demo123')">
+                    <button class="btn btn-subtle-secondary btn-sm" onclick="quickLogin('demo@example.com', 'demo123')">
                         <i class="fas fa-user me-1"></i>
                         Demo User
                     </button>

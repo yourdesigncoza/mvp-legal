@@ -240,7 +240,6 @@ function getAllUsers(): array
 <?php include __DIR__ . '/../app/templates/header.php'; ?>
 
 <div class="container-fluid px-0">
-    <?php include __DIR__ . '/../app/templates/navbar.php'; ?>
     
     <div class="content">
         <div class="container-fluid px-6 py-4">
@@ -258,11 +257,11 @@ function getAllUsers(): array
                 </div>
                 <div class="col-auto">
                     <div class="d-flex gap-2">
-                        <a href="/my-cases.php" class="btn btn-outline-secondary">
+                        <a href="/my-cases.php" class="btn btn-subtle-secondary">
                             <i class="fas fa-folder me-2"></i>
                             My Cases
                         </a>
-                        <a href="/upload.php" class="btn btn-primary">
+                        <a href="<?= app_url('upload.php') ?>" class="btn btn-primary">
                             <i class="fas fa-upload me-2"></i>
                             New Analysis
                         </a>
@@ -272,14 +271,14 @@ function getAllUsers(): array
 
             <!-- Success/Error Messages -->
             <?php if ($success_message): ?>
-                <div class="alert alert-success border-0" role="alert">
+                <div class="alert alert-subtle-success border-0" role="alert">
                     <i class="fas fa-check-circle me-2"></i>
                     <?= htmlspecialchars($success_message) ?>
                 </div>
             <?php endif; ?>
 
             <?php foreach ($errors as $error): ?>
-                <div class="alert alert-danger border-0" role="alert">
+                <div class="alert alert-subtle-danger border-0" role="alert">
                     <i class="fas fa-exclamation-circle me-2"></i>
                     <?= htmlspecialchars($error) ?>
                 </div>
@@ -562,7 +561,7 @@ function getAllUsers(): array
                                                             placeholder="sk-..."
                                                             value="<?= $openai_key_status ? '••••••••••••••••••••' : '' ?>"
                                                         />
-                                                        <button class="btn btn-outline-secondary" type="button" onclick="togglePassword('openai_api_key')">
+                                                        <button class="btn btn-subtle-secondary" type="button" onclick="togglePassword('openai_api_key')">
                                                             <i class="fas fa-eye"></i>
                                                         </button>
                                                     </div>
@@ -579,7 +578,7 @@ function getAllUsers(): array
                                                     </button>
                                                     
                                                     <?php if ($openai_key_status): ?>
-                                                        <button type="submit" name="action" value="test_openai" class="btn btn-outline-success">
+                                                        <button type="submit" name="action" value="test_openai" class="btn btn-subtle-success">
                                                             <i class="fas fa-plug me-2"></i>
                                                             Test Connection
                                                         </button>
@@ -614,7 +613,7 @@ function getAllUsers(): array
                                                             placeholder="pplx-..."
                                                             value="<?= $perplexity_key_status ? '••••••••••••••••••••' : '' ?>"
                                                         />
-                                                        <button class="btn btn-outline-secondary" type="button" onclick="togglePassword('perplexity_api_key')">
+                                                        <button class="btn btn-subtle-secondary" type="button" onclick="togglePassword('perplexity_api_key')">
                                                             <i class="fas fa-eye"></i>
                                                         </button>
                                                     </div>
@@ -631,7 +630,7 @@ function getAllUsers(): array
                                                     </button>
                                                     
                                                     <?php if ($perplexity_key_status): ?>
-                                                        <button type="submit" name="action" value="test_perplexity" class="btn btn-outline-success">
+                                                        <button type="submit" name="action" value="test_perplexity" class="btn btn-subtle-success">
                                                             <i class="fas fa-plug me-2"></i>
                                                             Test Connection
                                                         </button>
@@ -763,14 +762,14 @@ function getAllUsers(): array
                                                                     <input type="hidden" name="user_id" value="<?= $user['id'] ?>">
                                                                     
                                                                     <?php if ($user['is_admin']): ?>
-                                                                        <button type="submit" class="btn btn-sm btn-outline-warning" 
+                                                                        <button type="submit" class="btn btn-sm btn-subtle-warning" 
                                                                                 onclick="return confirm('Remove admin privileges from <?= htmlspecialchars($user['name'], ENT_QUOTES) ?>?')">
                                                                             <i class="fas fa-user me-1"></i>
                                                                             Remove Admin
                                                                         </button>
                                                                     <?php else: ?>
                                                                         <input type="hidden" name="make_admin" value="1">
-                                                                        <button type="submit" class="btn btn-sm btn-outline-danger"
+                                                                        <button type="submit" class="btn btn-sm btn-subtle-danger"
                                                                                 onclick="return confirm('Grant admin privileges to <?= htmlspecialchars($user['name'], ENT_QUOTES) ?>?')">
                                                                             <i class="fas fa-shield-alt me-1"></i>
                                                                             Make Admin
@@ -873,7 +872,7 @@ function getAllUsers(): array
                                                         </td>
                                                         <td>
                                                             <div class="dropdown">
-                                                                <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                                                                <button class="btn btn-sm btn-subtle-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
                                                                     <i class="fas fa-ellipsis-v"></i>
                                                                 </button>
                                                                 <ul class="dropdown-menu">

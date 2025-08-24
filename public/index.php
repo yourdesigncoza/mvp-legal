@@ -35,22 +35,22 @@ $page_title = 'Appeal Prospect MVP - Legal Judgment Analysis';
                 
                 <?php if (is_logged_in()): ?>
                     <div class="d-flex justify-content-center gap-3 flex-wrap">
-                        <a href="/upload.php" class="btn btn-light btn-lg">
+                        <a href="<?= app_url('upload.php') ?>" class="btn btn-light btn-lg">
                             <i class="fas fa-upload me-2"></i>
                             Upload Judgment
                         </a>
-                        <a href="/my-cases.php" class="btn btn-outline-light btn-lg">
+                        <a href="<?= app_url('my-cases.php') ?>" class="btn btn-outline-light btn-lg">
                             <i class="fas fa-folder me-2"></i>
                             View My Cases
                         </a>
                     </div>
                 <?php else: ?>
                     <div class="d-flex justify-content-center gap-3 flex-wrap">
-                        <a href="/register.php" class="btn btn-light btn-lg">
+                        <a href="<?= app_url('register.php') ?>" class="btn btn-light btn-lg">
                             <i class="fas fa-user-plus me-2"></i>
                             Get Started
                         </a>
-                        <a href="/login.php" class="btn btn-outline-light btn-lg">
+                        <a href="<?= app_url('login.php') ?>" class="btn btn-outline-light btn-lg">
                             <i class="fas fa-sign-in-alt me-2"></i>
                             Login
                         </a>

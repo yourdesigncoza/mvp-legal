@@ -37,7 +37,7 @@ if ($case_id <= 0) {
     } elseif ($case_data['status'] !== 'analyzed') {
         // Redirect to analyze page if not complete
         if ($case_data['status'] === 'uploaded') {
-            header('Location: /analyze.php?case_id=' . $case_id);
+            redirect('analyze.php?case_id=' . $case_id);
             exit;
         } elseif ($case_data['status'] === 'analyzing') {
             $errors[] = 'Analysis is still in progress. Please wait and refresh the page.';
@@ -216,7 +216,6 @@ $page_title = 'Analysis Results - Appeal Prospect MVP';
 <?php include __DIR__ . '/../app/templates/header.php'; ?>
 
 <div class="container-fluid px-0">
-    <?php include __DIR__ . '/../app/templates/navbar.php'; ?>
     
     <div class="content">
         <div class="container-fluid px-6 py-4">
@@ -226,7 +225,7 @@ $page_title = 'Analysis Results - Appeal Prospect MVP';
                 <div class="row justify-content-center">
                     <div class="col-lg-8">
                         <?php foreach ($errors as $error): ?>
-                            <div class="alert alert-danger border-0" role="alert">
+                            <div class="alert alert-subtle-danger border-0" role="alert">
                                 <div class="d-flex">
                                     <i class="fas fa-exclamation-circle fs-4 me-3"></i>
                                     <div>
@@ -238,11 +237,11 @@ $page_title = 'Analysis Results - Appeal Prospect MVP';
                         <?php endforeach; ?>
                         
                         <div class="text-center mt-4">
-                            <a href="/upload.php" class="btn btn-primary">
+                            <a href="<?= app_url('upload.php') ?>" class="btn btn-primary">
                                 <i class="fas fa-upload me-2"></i>
                                 Upload New Case
                             </a>
-                            <a href="/my-cases.php" class="btn btn-outline-secondary ms-2">
+                            <a href="/my-cases.php" class="btn btn-subtle-secondary ms-2">
                                 <i class="fas fa-folder me-2"></i>
                                 My Cases
                             </a>
@@ -272,11 +271,11 @@ $page_title = 'Analysis Results - Appeal Prospect MVP';
                     </div>
                     <div class="col-auto">
                         <div class="d-flex gap-2">
-                            <a href="/my-cases.php" class="btn btn-outline-secondary">
+                            <a href="/my-cases.php" class="btn btn-subtle-secondary">
                                 <i class="fas fa-arrow-left me-2"></i>
                                 Back to Cases
                             </a>
-                            <a href="/analyze.php?case_id=<?= $case_id ?>" class="btn btn-outline-primary">
+                            <a href="/analyze.php?case_id=<?= $case_id ?>" class="btn btn-subtle-primary">
                                 <i class="fas fa-redo me-2"></i>
                                 Re-analyze
                             </a>
@@ -358,7 +357,7 @@ $page_title = 'Analysis Results - Appeal Prospect MVP';
                                             <i class="<?= $config['icon'] ?> me-2"></i>
                                             <?= $section_count ?>. <?= htmlspecialchars($config['title']) ?>
                                         </h5>
-                                        <button class="btn btn-sm btn-outline-<?= $config['color'] ?>" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-<?= $section_key ?>">
+                                        <button class="btn btn-sm btn-subtle-<?= $config['color'] ?>" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-<?= $section_key ?>">
                                             <i class="fas fa-chevron-down"></i>
                                         </button>
                                     </div>

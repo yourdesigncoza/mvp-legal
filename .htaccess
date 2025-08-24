@@ -8,7 +8,6 @@ Header always set X-XSS-Protection "1; mode=block"
 Header always set Referrer-Policy "strict-origin-when-cross-origin"
 
 # Hide server information
-ServerTokens Prod
 Header unset Server
 
 # Prevent access to sensitive files
@@ -34,10 +33,14 @@ RewriteEngine On
 # RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
 
 # Redirect to public directory for web requests
-RewriteCond %{REQUEST_URI} !^/public/
+# Handle root directory request
+RewriteRule ^$ public/index.php [L]
+
+# Handle other requests
+RewriteCond %{REQUEST_URI} !^/mvp-legal/public/
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule ^(.*)$ /public/$1 [L]
+RewriteRule ^(.*)$ public/$1 [L]
 
 # PHP Security Settings
 php_flag display_errors Off

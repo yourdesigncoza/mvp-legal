@@ -144,14 +144,14 @@
                         </a>
                         
                         <!-- Back Button -->
-                        <button onclick="goBack()" class="btn btn-outline-secondary btn-lg">
+                        <button onclick="goBack()" class="btn btn-subtle-secondary btn-lg">
                             <i class="fas fa-arrow-left me-2"></i>
                             Go Back
                         </button>
                         
                         <!-- Retry Button (for 500 errors) -->
                         <?php if (($status_code ?? 500) === 500): ?>
-                            <button onclick="retryPage()" class="btn btn-outline-primary btn-lg">
+                            <button onclick="retryPage()" class="btn btn-subtle-primary btn-lg">
                                 <i class="fas fa-redo me-2"></i>
                                 Try Again
                             </button>
@@ -176,7 +176,7 @@
                                     Login
                                 </a>
                             <?php endif; ?>
-                            <a href="/upload.php" class="text-decoration-none small">
+                            <a href="<?= app_url('upload.php') ?>" class="text-decoration-none small">
                                 <i class="fas fa-upload me-1"></i>
                                 Upload New Case
                             </a>
@@ -256,7 +256,7 @@
         setTimeout(() => {
             if (!localStorage.getItem('error_shortcuts_shown')) {
                 const tooltip = document.createElement('div');
-                tooltip.className = 'position-fixed top-0 end-0 m-3 alert alert-info alert-dismissible fade show';
+                tooltip.className = 'position-fixed top-0 end-0 m-3 alert alert-subtle-info alert-dismissible fade show';
                 tooltip.style.zIndex = '9999';
                 tooltip.innerHTML = `
                     <small>

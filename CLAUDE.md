@@ -27,8 +27,29 @@ SOURCE schema.sql;
 
 ## Development Commands
 
-**PDF Processing Requirement**:
+**Testing**:
 ```bash
+# Run all tests
+php run-tests.php
+
+# Run specific test suite
+php run-tests.php unit
+php run-tests.php integration
+php run-tests.php functional
+php run-tests.php security
+
+# Run specific test file
+php run-tests.php SecurityTest.php
+
+# PHPUnit directly (if installed via Composer)
+vendor/bin/phpunit --configuration phpunit.xml
+```
+
+**Dependencies**:
+```bash
+# Install PHPUnit for testing
+composer install
+
 # Install pdftotext utility (required for PDF text extraction)
 sudo apt-get install poppler-utils  # Ubuntu/Debian
 ```
@@ -38,6 +59,9 @@ sudo apt-get install poppler-utils  # Ubuntu/Debian
 # Set proper permissions for uploads directory
 chmod 755 uploads/
 chmod 644 uploads/.htaccess
+
+# Ensure test coverage directory is writable
+chmod 755 tests/coverage/
 ```
 
 **Development Server** (if not using XAMPP):
@@ -164,5 +188,33 @@ Both paths create case records with `status='uploaded'`, then redirect to `analy
 1. Follow pattern in `gpt_handler.php` and `perplexity.php` for new AI services  
 2. Implement graceful degradation and error recovery
 3. Store API configurations in encrypted settings table
+
+## Testing Framework
+
+The application includes a comprehensive testing suite with 4 test categories:
+
+**Test Execution**:
+- **Unit Tests** (`tests/Unit/`): Individual component testing (SecurityTest, PDFParserTest, FormValidatorTest)  
+- **Integration Tests** (`tests/Integration/`): Cross-component workflows (AuthenticationTest, AIAnalysisTest)
+- **Functional Tests** (`tests/Functional/`): End-to-end user journeys (UserWorkflowTest)
+- **Security Tests**: CSRF, input validation, file upload security, session management
+
+**Test Database**: Tests use in-memory SQLite, created fresh per run with automatic cleanup
+
+**Coverage Reports**: Generated in `tests/coverage/index.html` with targets of 90%+ for security functions, 80%+ for business logic
+
+## Configuration Management
+
+**Environment Settings** (`app/config.php`):
+- Database credentials and connection settings
+- File upload limits (10MB max, PDF/text allowed)
+- OpenAI API configuration (GPT-4o-mini, 4000 max tokens)
+- Security settings (session lifetime, CSRF tokens)
+- South African timezone (Africa/Johannesburg)
+
+**Runtime Environment Variables**:
+- `APP_ENV`: 'development' or 'production' 
+- `APP_DEBUG`: Controls error display and logging
+- PHP settings: 256M memory, 300s execution time
 
 This MVP demonstrates a complete legal tech workflow suitable for production scaling with proper framework integration and infrastructure.

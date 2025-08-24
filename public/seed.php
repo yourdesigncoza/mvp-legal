@@ -147,7 +147,7 @@ $page_title = 'Database Setup - Appeal Prospect MVP';
     <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="/assets/css/phoenix-bootstrap.css" rel="stylesheet">
+    <link href="<?= asset_url('assets/css/phoenix-bootstrap.css') ?>" rel="stylesheet">
 </head>
 <body class="bg-light">
     <div class="container py-5">
@@ -258,7 +258,7 @@ $page_title = 'Database Setup - Appeal Prospect MVP';
                         <ol class="mb-0">
                             <li class="mb-2">
                                 <strong>Configure API Keys:</strong> 
-                                <a href="/admin.php" class="text-decoration-none">
+                                <a href="<?= app_url('admin.php') ?>" class="text-decoration-none">
                                     Login as admin and set your OpenAI/Perplexity API keys
                                 </a>
                             </li>
@@ -280,16 +280,16 @@ $page_title = 'Database Setup - Appeal Prospect MVP';
 
                 <!-- Action Buttons -->
                 <div class="d-flex gap-3 justify-content-center">
-                    <a href="/index.php" class="btn btn-primary">
+                    <a href="<?= app_url('index.php') ?>" class="btn btn-primary">
                         <i class="fas fa-home me-2"></i>
                         Go to Application
                     </a>
-                    <a href="/login.php" class="btn btn-success">
+                    <a href="<?= app_url('login.php') ?>" class="btn btn-subtle-success">
                         <i class="fas fa-sign-in-alt me-2"></i>
                         Login Now
                     </a>
                     <?php if ($success): ?>
-                    <button class="btn btn-danger" onclick="deleteScript()">
+                    <button class="btn btn-subtle-danger" onclick="deleteScript()">
                         <i class="fas fa-trash me-2"></i>
                         Delete This Script
                     </button>
@@ -297,7 +297,7 @@ $page_title = 'Database Setup - Appeal Prospect MVP';
                 </div>
 
                 <!-- Warning -->
-                <div class="alert alert-warning border-0 mt-4" role="alert">
+                <div class="alert alert-subtle-warning border-0 mt-4" role="alert">
                     <h6 class="alert-heading">
                         <i class="fas fa-exclamation-triangle me-2"></i>
                         Security Warning

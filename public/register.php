@@ -13,7 +13,7 @@ start_session();
 
 // Redirect if already logged in
 if (is_logged_in()) {
-    header('Location: /index.php');
+    redirect('index.php');
     exit;
 }
 
@@ -67,7 +67,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (empty($errors)) {
             if (register_user($form_data['email'], $form_data['password'], $form_data['name'])) {
                 set_flash_message('Registration successful! Please log in to continue.', 'success');
-                header('Location: /login.php');
+                redirect('login.php');
                 exit;
             } else {
                 $errors['email'] = 'An account with this email address already exists';
@@ -86,7 +86,7 @@ $page_title = 'Register - Appeal Prospect MVP';
             
             <!-- Logo/Brand -->
             <div class="text-center mb-7">
-                <a class="d-flex flex-center text-decoration-none mb-4" href="/index.php">
+                <a class="d-flex flex-center text-decoration-none mb-4" href="<?= app_url('index.php') ?>">
                     <div class="d-flex align-items-center fw-bolder fs-2 d-inline-block text-primary">
                         <i class="fas fa-gavel me-2"></i>
                         Appeal Prospect
@@ -97,7 +97,7 @@ $page_title = 'Register - Appeal Prospect MVP';
             </div>
 
             <!-- Registration Form -->
-            <form method="POST" action="/register.php" novalidate>
+            <form method="POST" action="<?= app_url('register.php') ?>" novalidate>
                 <?= csrf_field() ?>
 
                 <!-- Full Name -->
@@ -216,7 +216,7 @@ $page_title = 'Register - Appeal Prospect MVP';
 
                 <!-- Display general errors -->
                 <?php if (isset($errors['csrf'])): ?>
-                    <div class="alert alert-danger" role="alert">
+                    <div class="alert alert-subtle-danger" role="alert">
                         <i class="fas fa-exclamation-circle me-2"></i>
                         <?= htmlspecialchars($errors['csrf']) ?>
                     </div>
@@ -231,7 +231,7 @@ $page_title = 'Register - Appeal Prospect MVP';
                 <!-- Login Link -->
                 <div class="text-center">
                     <span class="fs-9">Already have an account? </span>
-                    <a class="fs-9 fw-bold text-decoration-none" href="/login.php">
+                    <a class="fs-9 fw-bold text-decoration-none" href="<?= app_url('login.php') ?>">
                         Sign in here
                     </a>
                 </div>

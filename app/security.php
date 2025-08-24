@@ -476,7 +476,7 @@ function validate_api_key(string $key, string $type): array
         return ['valid' => false, 'error' => 'API key contains invalid characters'];
     }
     
-    return ['valid' => true, 'error' => ''];
+    return ['valid' => true, 'error' => '', 'value' => $key];
 }
 
 /**

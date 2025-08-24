@@ -12,7 +12,7 @@ start_session();
 
 // Check if user is logged in
 if (!is_logged_in()) {
-    header('Location: /login.php');
+    redirect('login.php');
     exit;
 }
 
@@ -41,7 +41,7 @@ if ($valid_logout) {
     set_flash_message("Goodbye {$user_name}! You have been logged out successfully.", 'info');
     
     // Redirect to home page
-    header('Location: /index.php');
+    redirect('index.php');
     exit;
 } else {
     // Show logout confirmation page
@@ -56,7 +56,7 @@ if ($valid_logout) {
             
             <!-- Logo/Brand -->
             <div class="text-center mb-5">
-                <a class="d-flex flex-center text-decoration-none mb-4" href="/index.php">
+                <a class="d-flex flex-center text-decoration-none mb-4" href="<?= app_url('index.php') ?>">
                     <div class="d-flex align-items-center fw-bolder fs-2 d-inline-block text-primary">
                         <i class="fas fa-gavel me-2"></i>
                         Appeal Prospect
@@ -88,7 +88,7 @@ if ($valid_logout) {
             </div>
 
             <!-- Logout Form -->
-            <form method="POST" action="/logout.php" class="mb-3">
+            <form method="POST" action="<?= app_url('logout.php') ?>" class="mb-3">
                 <?= csrf_field() ?>
                 <button class="btn btn-danger w-100 mb-3" type="submit">
                     <i class="fas fa-sign-out-alt me-2"></i>
@@ -111,16 +111,16 @@ if ($valid_logout) {
                     <small class="text-body-tertiary">Quick Actions</small>
                 </div>
                 <div class="d-flex gap-2 justify-content-center mt-3">
-                    <a href="/my-cases.php" class="btn btn-outline-info btn-sm">
+                    <a href="<?= app_url('my-cases.php') ?>" class="btn btn-outline-info btn-sm">
                         <i class="fas fa-folder me-1"></i>
                         My Cases
                     </a>
-                    <a href="/upload.php" class="btn btn-outline-success btn-sm">
+                    <a href="<?= app_url('upload.php') ?>" class="btn btn-outline-success btn-sm">
                         <i class="fas fa-upload me-1"></i>
                         Upload
                     </a>
                     <?php if (current_is_admin()): ?>
-                    <a href="/admin.php" class="btn btn-outline-warning btn-sm">
+                    <a href="<?= app_url('admin.php') ?>" class="btn btn-outline-warning btn-sm">
                         <i class="fas fa-cog me-1"></i>
                         Admin
                     </a>

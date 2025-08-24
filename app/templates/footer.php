@@ -85,7 +85,7 @@
                     if (file.type.startsWith('image/')) {
                         preview.innerHTML = `<img src="${e.target.result}" class="img-fluid rounded" style="max-height: 200px;">`;
                     } else {
-                        preview.innerHTML = `<div class="alert alert-info">
+                        preview.innerHTML = `<div class="alert alert-subtle-info">
                             <i class="fas fa-file me-2"></i>
                             Selected: ${file.name} (${(file.size / 1024 / 1024).toFixed(2)} MB)
                         </div>`;

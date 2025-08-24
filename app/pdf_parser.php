@@ -237,8 +237,10 @@ class PDFParser
         // Create temporary output file
         $temp_output = tempnam(sys_get_temp_dir(), 'pdf_text_');
         
-        // Build command with proper escaping
-        $command = escapeshellcmd($pdftotext_path) . ' -layout -enc UTF-8 ' . 
+        // Build command with proper escaping and use system libraries
+        // Use LD_LIBRARY_PATH to ensure system libraries are used instead of XAMPP's
+        $command = 'LD_LIBRARY_PATH=/lib/x86_64-linux-gnu:/usr/lib/x86_64-linux-gnu ' .
+                   escapeshellcmd($pdftotext_path) . ' -layout -enc UTF-8 ' . 
                    escapeshellarg($file_path) . ' ' . escapeshellarg($temp_output);
         
         // Execute command

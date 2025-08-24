@@ -104,11 +104,12 @@ function current_user(): ?array {
 /**
  * Require user to be logged in, redirect if not
  */
-function require_login(string $redirect_to = '/login.php'): void {
+function require_login(string $redirect_to = ''): void {
     if (!is_logged_in()) {
         // Store the intended destination
         $_SESSION['redirect_after_login'] = $_SERVER['REQUEST_URI'];
-        header('Location: ' . $redirect_to);
+        $redirect_url = $redirect_to ?: app_url('login.php');
+        header('Location: ' . $redirect_url);
         exit;
     }
 }
@@ -116,10 +117,11 @@ function require_login(string $redirect_to = '/login.php'): void {
 /**
  * Require user to be admin, redirect if not
  */
-function require_admin(string $redirect_to = '/index.php'): void {
+function require_admin(string $redirect_to = ''): void {
     require_login();
     if (!current_is_admin()) {
-        header('Location: ' . $redirect_to);
+        $redirect_url = $redirect_to ?: app_url('index.php');
+        header('Location: ' . $redirect_url);
         exit;
     }
 }
@@ -128,11 +130,19 @@ function require_admin(string $redirect_to = '/index.php'): void {
  * Hash password using Argon2id
  */
 function hash_password(string $password): string {
-    return password_hash($password, PASSWORD_ARGON2ID, [
-        'memory_cost' => 65536, // 64 MB
-        'time_cost' => 4,       // 4 iterations
-        'threads' => 3          // 3 threads
-    ]);
+    // Use Argon2ID if available, otherwise fall back to bcrypt
+    if (defined('PASSWORD_ARGON2ID')) {
+        return password_hash($password, PASSWORD_ARGON2ID, [
+            'memory_cost' => 65536, // 64 MB
+            'time_cost' => 4,       // 4 iterations
+            'threads' => 3          // 3 threads
+        ]);
+    } else {
+        // Fallback to bcrypt with high cost
+        return password_hash($password, PASSWORD_DEFAULT, [
+            'cost' => 12
+        ]);
+    }
 }
 
 /**

@@ -35,6 +35,34 @@ function url_safe(string $value): string {
 }
 
 /**
+ * Generate asset URL with proper base path
+ */
+function asset_url(string $path): string {
+    $base_url = defined('APP_URL') ? APP_URL : 'http://localhost/mvp-legal';
+    return rtrim($base_url, '/') . '/' . ltrim($path, '/');
+}
+
+/**
+ * Generate application URL with proper base path
+ */
+function app_url(string $path = ''): string {
+    $base_url = defined('APP_URL') ? APP_URL : 'http://localhost/mvp-legal';
+    if (empty($path)) {
+        return $base_url;
+    }
+    return rtrim($base_url, '/') . '/' . ltrim($path, '/');
+}
+
+/**
+ * Redirect to application URL
+ */
+function redirect(string $path = '', int $status_code = 302): void {
+    $url = app_url($path);
+    header("Location: $url", true, $status_code);
+    exit;
+}
+
+/**
  * Render a template with variables
  */
 function render_template(string $template, array $variables = []): void {
@@ -132,15 +160,15 @@ function set_flash_messages(array $messages): void {
  */
 function phoenix_alert(string $message, string $type = 'info', bool $dismissible = true): string {
     $alert_classes = [
-        'success' => 'alert-success',
-        'error' => 'alert-danger',
-        'danger' => 'alert-danger',
-        'warning' => 'alert-warning',
-        'info' => 'alert-info',
-        'primary' => 'alert-primary'
+        'success' => 'alert-subtle-success',
+        'error' => 'alert-subtle-danger',
+        'danger' => 'alert-subtle-danger',
+        'warning' => 'alert-subtle-warning',
+        'info' => 'alert-subtle-info',
+        'primary' => 'alert-subtle-primary'
     ];
     
-    $class = $alert_classes[$type] ?? 'alert-info';
+    $class = $alert_classes[$type] ?? 'alert-subtle-info';
     $dismissible_class = $dismissible ? ' alert-dismissible fade show' : '';
     $dismiss_button = $dismissible ? '<button type="button" class="btn-close" data-bs-dismiss="alert"></button>' : '';
     
@@ -358,30 +386,12 @@ function format_file_size(int $bytes): string {
 }
 
 /**
- * Sanitize output for HTML
+ * Alias for format_file_size
  */
-function e(string $value): string {
-    return htmlspecialchars($value, ENT_QUOTES, 'UTF-8');
+function format_bytes(int $bytes): string {
+    return format_file_size($bytes);
 }
 
-/**
- * Generate CSRF field HTML
- */
-function csrf_field(): string {
-    if (function_exists('csrf_field')) {
-        return \csrf_field();
-    }
-    
-    // Fallback if auth functions not loaded yet
-    if (session_status() === PHP_SESSION_NONE) {
-        session_start();
-    }
-    
-    if (!isset($_SESSION['csrf_token'])) {
-        $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
-    }
-    
-    return '<input type="hidden" name="csrf_token" value="' . e($_SESSION['csrf_token']) . '">';
-}
+
 
 ?>

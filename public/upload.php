@@ -87,7 +87,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         $success_message = "File processed successfully! Extracted " . number_format($result['text_length']) . " characters of text.";
                         
                         // Redirect to analysis page
-                        header('Location: /analyze.php?case_id=' . $result['case_id']);
+                        redirect('analyze.php?case_id=' . $result['case_id']);
                         exit;
                     } else {
                         $errors['general'] = $result['error'];
@@ -100,7 +100,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         $success_message = "Text processed successfully! Ready for analysis (" . number_format($result['text_length']) . " characters).";
                         
                         // Redirect to analysis page
-                        header('Location: /analyze.php?case_id=' . $result['case_id']);
+                        redirect('analyze.php?case_id=' . $result['case_id']);
                         exit;
                     } else {
                         $errors['general'] = $result['error'];
@@ -118,7 +118,6 @@ $page_title = 'Upload Judgment - Appeal Prospect MVP';
 <?php include __DIR__ . '/../app/templates/header.php'; ?>
 
 <div class="container-fluid px-0">
-    <?php include __DIR__ . '/../app/templates/navbar.php'; ?>
     
     <div class="content">
         <div class="container-fluid px-6 py-4">
@@ -135,7 +134,7 @@ $page_title = 'Upload Judgment - Appeal Prospect MVP';
                     </p>
                 </div>
                 <div class="col-auto">
-                    <a href="/my-cases.php" class="btn btn-outline-secondary">
+                    <a href="/my-cases.php" class="btn btn-subtle-secondary">
                         <i class="fas fa-folder me-2"></i>
                         My Cases
                     </a>
@@ -144,7 +143,7 @@ $page_title = 'Upload Judgment - Appeal Prospect MVP';
 
             <!-- Success Message -->
             <?php if ($success_message): ?>
-                <div class="alert alert-success border-0" role="alert">
+                <div class="alert alert-subtle-success border-0" role="alert">
                     <div class="d-flex">
                         <i class="fas fa-check-circle fs-4 me-3"></i>
                         <div>
@@ -157,7 +156,7 @@ $page_title = 'Upload Judgment - Appeal Prospect MVP';
 
             <!-- General Error -->
             <?php if (isset($errors['general'])): ?>
-                <div class="alert alert-danger border-0" role="alert">
+                <div class="alert alert-subtle-danger border-0" role="alert">
                     <div class="d-flex">
                         <i class="fas fa-exclamation-circle fs-4 me-3"></i>
                         <div>
@@ -180,7 +179,7 @@ $page_title = 'Upload Judgment - Appeal Prospect MVP';
                         </div>
                         <div class="card-body">
                             
-                            <form method="POST" action="/upload.php" enctype="multipart/form-data" novalidate>
+                            <form method="POST" action="<?= app_url('upload.php') ?>" enctype="multipart/form-data" novalidate>
                                 <?= csrf_field() ?>
                                 
                                 <!-- Upload Type Toggle -->
@@ -245,14 +244,13 @@ $page_title = 'Upload Judgment - Appeal Prospect MVP';
                                             
                                             <!-- Drag and Drop Area -->
                                             <div class="border border-2 border-dashed border-primary rounded-3 p-5 text-center bg-primary bg-opacity-10" 
-                                                 id="dropzone" 
-                                                 onclick="document.getElementById('judgment_file').click()">
+                                                 id="dropzone">
                                                 <div class="mb-3">
                                                     <i class="fas fa-cloud-upload-alt text-primary" style="font-size: 3rem;"></i>
                                                 </div>
                                                 <h5 class="text-primary mb-2">Drop PDF file here</h5>
                                                 <p class="text-body-tertiary mb-3">or click to browse files</p>
-                                                <button type="button" class="btn btn-primary">
+                                                <button type="button" class="btn btn-primary" onclick="event.stopPropagation(); document.getElementById('judgment_file').click()">
                                                     <i class="fas fa-folder-open me-2"></i>
                                                     Choose File
                                                 </button>
@@ -280,7 +278,7 @@ $page_title = 'Upload Judgment - Appeal Prospect MVP';
                                             
                                             <!-- File Preview -->
                                             <div id="file-preview" class="mt-3 d-none">
-                                                <div class="alert alert-success border-0">
+                                                <div class="alert alert-subtle-success border-0">
                                                     <div class="d-flex align-items-center">
                                                         <i class="fas fa-file-pdf text-danger fs-4 me-3"></i>
                                                         <div>
@@ -372,7 +370,7 @@ $page_title = 'Upload Judgment - Appeal Prospect MVP';
                                 </ul>
                             </div>
                             
-                            <div class="alert alert-warning border-0">
+                            <div class="alert alert-subtle-warning border-0">
                                 <h6 class="alert-heading">
                                     <i class="fas fa-shield-alt me-2"></i>
                                     Privacy Notice
@@ -415,6 +413,16 @@ document.addEventListener('DOMContentLoaded', function() {
     const textArea = document.getElementById('judgment_text');
     const charCount = document.getElementById('char-count');
     
+    // Add click handler to dropzone (but not the button)
+    if (dropzone) {
+        dropzone.addEventListener('click', function(e) {
+            // Only trigger file dialog if not clicking the button
+            if (!e.target.closest('button')) {
+                document.getElementById('judgment_file').click();
+            }
+        });
+    }
+    
     // Character count for text input
     if (textArea) {
         textArea.addEventListener('input', function() {
@@ -436,9 +444,13 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // File upload handling
     fileInput.addEventListener('change', function(e) {
+        console.log('File input changed', e.target.files);
         const file = e.target.files[0];
         if (file) {
+            console.log('File selected:', file.name, file.size);
             showFilePreview(file);
+        } else {
+            console.log('No file selected');
         }
     });
     
@@ -462,7 +474,21 @@ document.addEventListener('DOMContentLoaded', function() {
         
         const files = e.dataTransfer.files;
         if (files.length > 0) {
-            fileInput.files = files;
+            console.log('File dropped:', files[0].name);
+            
+            // Try different approaches for setting files
+            try {
+                // Method 1: Try DataTransfer
+                const dt = new DataTransfer();
+                dt.items.add(files[0]);
+                fileInput.files = dt.files;
+                console.log('DataTransfer method worked');
+            } catch (e) {
+                console.log('DataTransfer method failed:', e);
+                // Method 2: Trigger file input programmatically
+                // We'll still show preview even if we can't set the input
+            }
+            
             showFilePreview(files[0]);
         }
     });
@@ -479,14 +505,45 @@ function setUploadType(type) {
 }
 
 function showFilePreview(file) {
-    const preview = document.getElementById('file-preview');
-    const fileName = document.getElementById('file-name');
-    const fileInfo = document.getElementById('file-info');
+    console.log('showFilePreview called with file:', file);
     
-    fileName.textContent = file.name;
-    fileInfo.textContent = `${formatBytes(file.size)} • ${file.type}`;
+    // Create the preview HTML dynamically since the static elements aren't being found
+    const previewHTML = `
+        <div class="alert alert-subtle-success border-0">
+            <div class="d-flex align-items-center">
+                <i class="fas fa-file-pdf text-danger fs-4 me-3"></i>
+                <div>
+                    <h6 class="alert-heading mb-1" id="file-name-display">${file.name}</h6>
+                    <p class="mb-0" id="file-info-display">${formatBytes(file.size)} • ${file.type || 'application/pdf'}</p>
+                </div>
+                <button type="button" class="btn-close ms-auto" onclick="clearFileUpload()"></button>
+            </div>
+        </div>
+    `;
     
-    preview.classList.remove('d-none');
+    // Find or create the preview container
+    let preview = document.getElementById('file-preview');
+    
+    if (!preview) {
+        console.log('Preview container not found, creating it...');
+        // Find the file input area and add preview after it
+        const fileInputContainer = document.getElementById('judgment_file');
+        if (fileInputContainer && fileInputContainer.parentElement) {
+            preview = document.createElement('div');
+            preview.id = 'file-preview';
+            preview.className = 'mt-3';
+            fileInputContainer.parentElement.appendChild(preview);
+        }
+    }
+    
+    if (preview) {
+        console.log('Updating preview content');
+        preview.innerHTML = previewHTML;
+        preview.classList.remove('d-none');
+        console.log('Preview should now be visible');
+    } else {
+        console.error('Could not create preview container');
+    }
 }
 
 function clearFileUpload() {

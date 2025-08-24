@@ -385,7 +385,7 @@ class ClientValidator {
                 .join('');
             
             errorSummary.innerHTML = `
-                <div class="alert alert-danger" role="alert">
+                <div class="alert alert-subtle-danger" role="alert">
                     <h6 class="alert-heading">
                         <i class="fas fa-exclamation-circle me-2"></i>
                         Please correct the following errors:
