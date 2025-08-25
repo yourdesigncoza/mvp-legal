@@ -258,7 +258,7 @@
 ## Phase 8: Case History Management
 **Goal**: User can view and manage their analysis history
 
-### 8.1 My Cases Page (public/my-cases.php)
+### 8.1 My Cases Page (public<?= app_url('my-cases.php') ?>)
 - [x] **Phoenix table layout**: ✅
   - Case name, date, status columns
   - Phoenix pagination component

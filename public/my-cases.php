@@ -108,7 +108,7 @@ $page_title = 'My Cases - Appeal Prospect MVP';
             <!-- Page Header -->
             <div class="row align-items-center justify-content-between py-2 pe-0 mb-4">
                 <div class="col-auto">
-                    <h1 class="text-body-emphasis mb-0">
+                    <h1 class="text-body-emphasis mb-0 fs-6">
                         <i class="fas fa-folder me-2 text-primary"></i>
                         My Cases
                     </h1>
@@ -276,7 +276,7 @@ $page_title = 'My Cases - Appeal Prospect MVP';
                                     <i class="fas fa-search me-1"></i>
                                     Search
                                 </button>
-                                <a href="/my-cases.php" class="btn btn-subtle-secondary">
+                                <a href="<?= app_url('my-cases.php') ?>" class="btn btn-subtle-secondary">
                                     <i class="fas fa-times me-1"></i>
                                     Clear
                                 </a>
@@ -300,7 +300,7 @@ $page_title = 'My Cases - Appeal Prospect MVP';
                                 No cases found with the selected filters.
                             <?php endif; ?>
                         </p>
-                        <a href="/my-cases.php" class="btn btn-subtle-primary">
+                        <a href="<?= app_url('my-cases.php') ?>" class="btn btn-subtle-primary">
                             <i class="fas fa-arrow-left me-2"></i>
                             View All Cases
                         </a>

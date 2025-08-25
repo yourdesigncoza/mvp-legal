@@ -125,7 +125,7 @@ $page_title = 'Upload Judgment - Appeal Prospect MVP';
             <!-- Page Header -->
             <div class="row align-items-center justify-content-between py-2 pe-0 mb-4">
                 <div class="col-auto">
-                    <h2 class="text-body-emphasis mb-0">
+                    <h2 class="text-body-emphasis mb-0 fs-6 mb-2">
                         <i class="fas fa-upload me-2 text-primary"></i>
                         Upload Judgment
                     </h2>
@@ -134,7 +134,7 @@ $page_title = 'Upload Judgment - Appeal Prospect MVP';
                     </p>
                 </div>
                 <div class="col-auto">
-                    <a href="/my-cases.php" class="btn btn-subtle-secondary">
+                    <a href="<?= app_url('my-cases.php') ?>" class="btn btn-subtle-secondary">
                         <i class="fas fa-folder me-2"></i>
                         My Cases
                     </a>
@@ -376,8 +376,7 @@ $page_title = 'Upload Judgment - Appeal Prospect MVP';
                                     Privacy Notice
                                 </h6>
                                 <p class="mb-0 small">
-                                    Your uploaded documents are processed securely and stored privately. 
-                                    Only you can access your case analyses.
+                                    This is only a demo platform & you should not upload sensitive documents.
                                 </p>
                             </div>
                         </div>

@@ -15,9 +15,7 @@
                 </div>
                 <div class="col-12 col-sm-auto text-center">
                     <p class="mb-0 text-body-tertiary">
-                        Powered by 
-                        <a href="#" class="text-decoration-none">Phoenix UI</a>
-                        &amp; <a href="#" class="text-decoration-none">Bootstrap 5</a>
+                        Developed by DEVAI
                     </p>
                 </div>
             </div>
@@ -40,16 +38,14 @@
 
     <!-- Custom JavaScript -->
     <script>
-        // Auto-dismiss alerts after 5 seconds
+        // Auto-dismiss alerts after 5 seconds targeting .alert-hide
         document.addEventListener('DOMContentLoaded', function() {
-            const alerts = document.querySelectorAll('.alert:not(.alert-permanent)');
+            const alerts = document.querySelectorAll('.alert-hide');
             alerts.forEach(alert => {
-                if (!alert.classList.contains('alert-permanent')) {
-                    setTimeout(() => {
-                        const bsAlert = new bootstrap.Alert(alert);
-                        bsAlert.close();
-                    }, 5000);
-                }
+                setTimeout(() => {
+                    const bsAlert = new bootstrap.Alert(alert);
+                    bsAlert.close();
+                }, 5000);
             });
         });
 

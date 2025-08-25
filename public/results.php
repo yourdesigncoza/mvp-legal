@@ -241,7 +241,7 @@ $page_title = 'Analysis Results - Appeal Prospect MVP';
                                 <i class="fas fa-upload me-2"></i>
                                 Upload New Case
                             </a>
-                            <a href="/my-cases.php" class="btn btn-subtle-secondary ms-2">
+                            <a href="<?= app_url('my-cases.php') ?>" class="btn btn-subtle-secondary ms-2">
                                 <i class="fas fa-folder me-2"></i>
                                 My Cases
                             </a>
@@ -257,11 +257,11 @@ $page_title = 'Analysis Results - Appeal Prospect MVP';
                         <nav aria-label="breadcrumb">
                             <ol class="breadcrumb mb-2">
                                 <li class="breadcrumb-item"><a href="/index.php">Home</a></li>
-                                <li class="breadcrumb-item"><a href="/my-cases.php">My Cases</a></li>
+                                <li class="breadcrumb-item"><a href="<?= app_url('my-cases.php') ?>">My Cases</a></li>
                                 <li class="breadcrumb-item active" aria-current="page">Analysis Results</li>
                             </ol>
                         </nav>
-                        <h1 class="text-body-emphasis mb-0">
+                        <h1 class="text-body-emphasis mb-0 fs-6">
                             <i class="fas fa-file-alt me-2 text-primary"></i>
                             <?= htmlspecialchars($case_data['case_name']) ?>
                         </h1>
@@ -271,7 +271,7 @@ $page_title = 'Analysis Results - Appeal Prospect MVP';
                     </div>
                     <div class="col-auto">
                         <div class="d-flex gap-2">
-                            <a href="/my-cases.php" class="btn btn-subtle-secondary">
+                            <a href="<?= app_url('my-cases.php') ?>" class="btn btn-subtle-secondary">
                                 <i class="fas fa-arrow-left me-2"></i>
                                 Back to Cases
                             </a>

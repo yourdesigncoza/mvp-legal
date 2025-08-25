@@ -247,7 +247,7 @@ function getAllUsers(): array
             <!-- Page Header -->
             <div class="row align-items-center justify-content-between py-2 pe-0 mb-4">
                 <div class="col-auto">
-                    <h1 class="text-body-emphasis mb-0">
+                    <h1 class="text-body-emphasis mb-0 fs-6">
                         <i class="fas fa-cog me-2 text-danger"></i>
                         Admin Dashboard
                     </h1>
@@ -257,7 +257,7 @@ function getAllUsers(): array
                 </div>
                 <div class="col-auto">
                     <div class="d-flex gap-2">
-                        <a href="/my-cases.php" class="btn btn-subtle-secondary">
+                        <a href="<?= app_url('my-cases.php') ?>" class="btn btn-subtle-secondary">
                             <i class="fas fa-folder me-2"></i>
                             My Cases
                         </a>

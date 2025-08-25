@@ -32,7 +32,7 @@
 
 <body>
     <!-- Global Disclaimer -->
-    <div class="alert alert-subtle-warning border-0 rounded-0 mb-0 text-center p-1 fs-9" role="alert">
+    <div class="alert alert-subtle-warning alert-dismissible fade show border-0 rounded-0 mb-0 text-center p-1 fs-9" role="alert">
         <i class="fas fa-exclamation-triangle me-2"></i>
         <strong>Demo Only — Not Legal Advice:</strong> This is a demonstration application for educational purposes only.
     </div>
@@ -114,7 +114,7 @@
 
     <!-- Main Content -->
     <main class="main" id="top">
-        <div class="container-fluid px-3">
+        <div class="container-fluid px-0">
             <?php
             // Display flash messages
             if (isset($_SESSION['flash_message'])): 

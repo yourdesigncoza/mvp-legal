@@ -166,7 +166,7 @@
                         </p>
                         <div class="d-flex gap-3 justify-content-center flex-wrap">
                             <?php if (function_exists('is_logged_in') && is_logged_in()): ?>
-                                <a href="/my-cases.php" class="text-decoration-none small">
+                                <a href="<?= app_url('my-cases.php') ?>" class="text-decoration-none small">
                                     <i class="fas fa-folder me-1"></i>
                                     My Cases
                                 </a>

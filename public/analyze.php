@@ -208,7 +208,7 @@ function processAnalysis(array $case_data, array &$status): ?array
                         <i class="fas fa-upload me-2"></i>
                         Upload New Case
                     </a>
-                    <a href="/my-cases.php" class="btn btn-subtle-secondary ms-2">
+                    <a href="<?= app_url('my-cases.php') ?>" class="btn btn-subtle-secondary ms-2">
                         <i class="fas fa-folder me-2"></i>
                         My Cases
                     </a>
@@ -399,7 +399,7 @@ function processAnalysis(array $case_data, array &$status): ?array
                                 </form>
                                 
                                 <div class="mt-4">
-                                    <a href="/my-cases.php" class="btn btn-subtle-secondary">
+                                    <a href="<?= app_url('my-cases.php') ?>" class="btn btn-subtle-secondary">
                                         <i class="fas fa-arrow-left me-2"></i>
                                         Back to My Cases
                                     </a>
@@ -458,7 +458,7 @@ function processAnalysis(array $case_data, array &$status): ?array
                         <i class="fas fa-upload me-2"></i>
                         Upload Judgment
                     </a>
-                    <a href="/my-cases.php" class="btn btn-subtle-secondary btn-lg ms-2">
+                    <a href="<?= app_url('my-cases.php') ?>" class="btn btn-subtle-secondary btn-lg ms-2">
                         <i class="fas fa-folder me-2"></i>
                         Browse Cases
                     </a>
