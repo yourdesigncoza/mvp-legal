@@ -19,7 +19,7 @@ include __DIR__ . '/header.php';
         <?= $content ?>
     <?php else: ?>
         <!-- Default content structure -->
-        <div class="container-fluid px-4 py-4">
+        <div class="container px-4 py-4">
             <?php if (isset($page_header)): ?>
                 <!-- Page Header -->
                 <div class="row mb-4">

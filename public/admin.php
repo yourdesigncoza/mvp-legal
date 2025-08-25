@@ -239,10 +239,10 @@ function getAllUsers(): array
 ?>
 <?php include __DIR__ . '/../app/templates/header.php'; ?>
 
-<div class="container-fluid px-0">
+<div class="container px-0">
     
     <div class="content">
-        <div class="container-fluid px-6 py-4">
+        <div class="container px-6 py-4">
             
             <!-- Page Header -->
             <div class="row align-items-center justify-content-between py-2 pe-0 mb-4">
@@ -703,7 +703,7 @@ function getAllUsers(): array
                                 <div class="card-body p-0">
                                     <div class="table-responsive">
                                         <table class="table table-hover mb-0">
-                                            <thead class="bg-body-tertiary">
+                                            <thead class="bg-body">
                                                 <tr>
                                                     <th>User</th>
                                                     <th>Role</th>
@@ -804,7 +804,7 @@ function getAllUsers(): array
                                 <div class="card-body p-0">
                                     <div class="table-responsive">
                                         <table class="table table-hover mb-0">
-                                            <thead class="bg-body-tertiary">
+                                            <thead class="bg-body">
                                                 <tr>
                                                     <th>Case Name</th>
                                                     <th>User</th>
@@ -830,7 +830,7 @@ function getAllUsers(): array
                                                                 <div>
                                                                     <h6 class="mb-1">
                                                                         <?php if ($case['has_analysis']): ?>
-                                                                            <a href="/results.php?case_id=<?= $case['id'] ?>" class="text-decoration-none">
+                                                                            <a href="<?= app_url('results.php') ?>?case_id=<?= $case['id'] ?>" class="text-decoration-none">
                                                                                 <?= htmlspecialchars($case['case_name']) ?>
                                                                             </a>
                                                                         <?php else: ?>
@@ -878,7 +878,7 @@ function getAllUsers(): array
                                                                 <ul class="dropdown-menu">
                                                                     <?php if ($case['has_analysis']): ?>
                                                                         <li>
-                                                                            <a class="dropdown-item" href="/results.php?case_id=<?= $case['id'] ?>">
+                                                                            <a class="dropdown-item" href="<?= app_url('results.php') ?>?case_id=<?= $case['id'] ?>">
                                                                                 <i class="fas fa-eye me-2"></i>
                                                                                 View Results
                                                                             </a>

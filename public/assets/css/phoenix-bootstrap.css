@@ -1398,7 +1398,7 @@ progress {
 }
 
 .container, .product-filter-container,
-.container-fluid,
+.container,
 .container-medium-xxl,
 .container-medium-xl,
 .container-medium-lg,
@@ -5598,7 +5598,7 @@ textarea.form-control-lg {
   padding: var(--phoenix-navbar-padding-y) var(--phoenix-navbar-padding-x);
 }
 .navbar > .container, .navbar > .product-filter-container,
-.navbar > .container-fluid,
+.navbar > .container,
 .navbar > .container-medium-xxl,
 .navbar > .container-medium-xl,
 .navbar > .container-medium-lg,
@@ -12653,7 +12653,7 @@ textarea.form-control-lg {
   background-color: rgba(var(--phoenix-secondary-bg-rgb), var(--phoenix-bg-opacity)) !important;
 }
 
-.bg-body-tertiary {
+.bg-body {
   --phoenix-bg-opacity: 1;
   background-color: rgba(var(--phoenix-tertiary-bg-rgb), var(--phoenix-bg-opacity)) !important;
 }
@@ -27449,7 +27449,7 @@ html[dir=rtl] .googlemap .gm-style-iw.gm-style-iw-c button[title=Close] {
 /*                                  Position                                  */
 /* -------------------------------------------------------------------------- */
 .container, .product-filter-container,
-.container-fluid,
+.container,
 .container-medium-xxl,
 .container-medium-xl,
 .container-medium-lg,
@@ -32823,7 +32823,7 @@ a[href].bg-body-secondary:hover, a[href].bg-body-secondary:focus {
 .bg-body-quaternary-hover:hover {
   background-color: var(--phoenix-quaternary-bg) !important;
 }
-.bg-body-tertiary-hover:hover {
+.bg-body-hover:hover {
   background-color: var(--phoenix-tertiary-bg) !important;
 }
 .bg-body-secondary-hover:hover {

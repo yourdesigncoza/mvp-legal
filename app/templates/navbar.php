@@ -8,7 +8,7 @@ $current_page = basename($_SERVER['PHP_SELF'], '.php');
 
 <!-- Navigation -->
 <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
-    <div class="container-fluid px-6">
+    <div class="container px-6">
         <!-- Brand -->
         <a class="navbar-brand fw-bolder fs-3 text-primary" href="<?= app_url('index.php') ?>">
             <i class="fas fa-gavel me-2"></i>

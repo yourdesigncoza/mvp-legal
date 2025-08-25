@@ -2,9 +2,9 @@
     </main>
 
     <!-- Footer -->
-    <footer class="footer position-relative mt-5">
+    <footer class="footer position-relative mt-5 fs-9 py-3 pt-4 bg-primary-lighter" style="height: auto;">
         <div class="container">
-            <div class="row g-0 justify-content-between align-items-center py-3">
+            <div class="row g-0 justify-content-between align-items-center">
                 <div class="col-12 col-sm-auto text-center">
                     <p class="mb-0 text-body-tertiary">
                         Appeal Prospect MVP &copy; <?= date('Y') ?> 
@@ -24,6 +24,14 @@
 
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- DropzoneJS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.3/dropzone.min.js"></script>
+    
+    <!-- Disable DropzoneJS auto-discovery -->
+    <script>
+        Dropzone.autoDiscover = false;
+    </script>
     
     <!-- Phoenix Config -->
     <script>

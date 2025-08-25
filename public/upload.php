@@ -117,10 +117,10 @@ $page_title = 'Upload Judgment - Appeal Prospect MVP';
 ?>
 <?php include __DIR__ . '/../app/templates/header.php'; ?>
 
-<div class="container-fluid px-0">
+<div class="container px-0">
     
     <div class="content">
-        <div class="container-fluid px-6 py-4">
+        <div class="container px-6 py-4">
             
             <!-- Page Header -->
             <div class="row align-items-center justify-content-between py-2 pe-0 mb-4">
@@ -171,7 +171,7 @@ $page_title = 'Upload Judgment - Appeal Prospect MVP';
                 <!-- Upload Form -->
                 <div class="col-12 col-xl-8">
                     <div class="card h-100 shadow-sm">
-                        <div class="card-header bg-body-tertiary">
+                        <div class="card-header bg-body">
                             <h5 class="card-title mb-0">
                                 <i class="fas fa-file-upload me-2"></i>
                                 Upload Method
@@ -238,31 +238,27 @@ $page_title = 'Upload Judgment - Appeal Prospect MVP';
                                     <!-- File Upload Tab -->
                                     <div class="tab-pane fade <?= $form_data['upload_type'] === 'file' ? 'show active' : '' ?>" id="upload-file">
                                         <div class="mb-4">
-                                            <label class="form-label" for="judgment_file">
+                                            <label class="form-label" for="dropzone-upload">
                                                 PDF File <span class="text-danger">*</span>
                                             </label>
-                                            
-                                            <!-- Drag and Drop Area -->
-                                            <div class="border border-2 border-dashed border-primary rounded-3 p-5 text-center bg-primary bg-opacity-10" 
-                                                 id="dropzone">
-                                                <div class="mb-3">
-                                                    <i class="fas fa-cloud-upload-alt text-primary" style="font-size: 3rem;"></i>
+
+                                            <!-- DropzoneJS Container -->
+                                            <div class="dropzone" id="dropzone-upload">
+                                                <div class="dz-message" data-dz-message>
+                                                    <div class="mb-3">
+                                                        <i class="fas fa-cloud-upload-alt text-primary" style="font-size: 3rem;"></i>
+                                                    </div>
+                                                    <h5 class="text-primary mb-2">Drop PDF file here</h5>
+                                                    <p class="text-body-tertiary mb-3">or click to browse files</p>
+                                                    <div class="btn btn-primary">
+                                                        <i class="fas fa-folder-open me-2"></i>
+                                                        Choose File
+                                                    </div>
                                                 </div>
-                                                <h5 class="text-primary mb-2">Drop PDF file here</h5>
-                                                <p class="text-body-tertiary mb-3">or click to browse files</p>
-                                                <button type="button" class="btn btn-primary" onclick="event.stopPropagation(); document.getElementById('judgment_file').click()">
-                                                    <i class="fas fa-folder-open me-2"></i>
-                                                    Choose File
-                                                </button>
                                             </div>
                                             
-                                            <input 
-                                                type="file" 
-                                                id="judgment_file" 
-                                                name="judgment_file" 
-                                                accept=".pdf,.txt" 
-                                                class="d-none <?= isset($errors['file']) ? 'is-invalid' : '' ?>"
-                                            />
+                                            <!-- Preview container for uploaded files -->
+                                            <div class="dropzone-previews mt-3"></div>
                                             
                                             <?php if (isset($errors['file'])): ?>
                                                 <div class="text-danger mt-2">
@@ -274,20 +270,6 @@ $page_title = 'Upload Judgment - Appeal Prospect MVP';
                                                 <i class="fas fa-info-circle me-1"></i>
                                                 Maximum file size: <?= format_bytes((int)get_setting('max_file_size', '10485760')) ?>
                                                 • Supported formats: PDF, TXT
-                                            </div>
-                                            
-                                            <!-- File Preview -->
-                                            <div id="file-preview" class="mt-3 d-none">
-                                                <div class="alert alert-subtle-success border-0">
-                                                    <div class="d-flex align-items-center">
-                                                        <i class="fas fa-file-pdf text-danger fs-4 me-3"></i>
-                                                        <div>
-                                                            <h6 class="alert-heading mb-1" id="file-name"></h6>
-                                                            <p class="mb-0" id="file-info"></p>
-                                                        </div>
-                                                        <button type="button" class="btn-close ms-auto" onclick="clearFileUpload()"></button>
-                                                    </div>
-                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -403,24 +385,112 @@ $page_title = 'Upload Judgment - Appeal Prospect MVP';
     </div>
 </div>
 
+<?php $upload_ajax_url = app_url('upload-ajax.php'); ?>
 <script>
+// Custom CSS for DropzoneJS Phoenix styling
+const dropzoneStyle = document.createElement('style');
+dropzoneStyle.textContent = `
+    .dropzone {
+        border: 2px dashed var(--phoenix-primary) !important;
+        border-radius: 12px !important;
+        background: rgba(var(--phoenix-primary-rgb), 0.1) !important;
+        color: var(--phoenix-body-color) !important;
+        transition: all 0.3s ease;
+        min-height: 100px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+    }
+    .dropzone:hover {
+        border-color: var(--phoenix-success) !important;
+        background: rgba(var(--phoenix-success-rgb), 0.1) !important;
+    }
+    .dropzone.dz-drag-hover {
+        border-color: var(--phoenix-success) !important;
+        background: rgba(var(--phoenix-success-rgb), 0.15) !important;
+    }
+    .dropzone .dz-message {
+        text-align: center;
+        margin: 0;
+    }
+    .dropzone .dz-preview {
+        margin: 20px 0 !important;
+    }
+    .dropzone .dz-preview .dz-image {
+        width: 40px !important;
+        height: 40px !important;
+        border-radius: 8px !important;
+    }
+    .dropzone .dz-preview .dz-details {
+        background: rgba(var(--phoenix-primary-rgb), 0.1) !important;
+        border-radius: 8px;
+        padding: 10px;
+    }
+    .dropzone .dz-preview .dz-progress {
+        background: rgba(var(--phoenix-gray-400), 0.3) !important;
+    }
+    .dropzone .dz-preview .dz-progress .dz-upload {
+        background: var(--phoenix-primary) !important;
+    }
+    .dropzone .dz-preview .dz-success-mark,
+    .dropzone .dz-preview .dz-error-mark {
+        background: rgba(255, 255, 255, 0.9);
+        border-radius: 50%;
+    }
+    .dropzone .dz-preview .dz-error-message {
+        background: var(--phoenix-danger) !important;
+        color: white !important;
+        border-radius: 6px;
+    }
+    .dropzone .dz-message {
+        padding: 2rem 2rem;
+    }
+    /* Hide message when files are present */
+    .dropzone.dz-started .dz-message {
+        display: none;
+    }
+    /* Preview container styles */
+    .dropzone-previews {
+        margin-top: 1rem;
+    }
+    .dropzone-previews .dz-preview {
+        margin: 0;
+        opacity: 1;
+        transform: none;
+    }
+    /* Card styling for file preview */
+    .dropzone-previews .card {
+        box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+        transition: all 0.2s ease-in-out;
+    }
+    .dropzone-previews .card:hover {
+        box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.1);
+    }
+    /* Progress bar styling */
+    .dz-preview .progress {
+        height: 2px;
+        background-color: rgba(var(--phoenix-gray-300-rgb), 0.3);
+        border-radius: 1px;
+        overflow: hidden;
+    }
+    .dz-preview .progress-bar {
+        transition: width 0.3s ease;
+        background-color: var(--phoenix-primary);
+    }
+    /* Avatar styling for file icon */
+    .dz-preview .avatar-name {
+        background-color: rgba(var(--phoenix-gray-200-rgb), 0.3) !important;
+        width: 60px;
+        height: 60px;
+    }
+`;
+document.head.appendChild(dropzoneStyle);
+
 document.addEventListener('DOMContentLoaded', function() {
-    // File upload functionality
-    const fileInput = document.getElementById('judgment_file');
-    const dropzone = document.getElementById('dropzone');
-    const filePreview = document.getElementById('file-preview');
     const textArea = document.getElementById('judgment_text');
     const charCount = document.getElementById('char-count');
-    
-    // Add click handler to dropzone (but not the button)
-    if (dropzone) {
-        dropzone.addEventListener('click', function(e) {
-            // Only trigger file dialog if not clicking the button
-            if (!e.target.closest('button')) {
-                document.getElementById('judgment_file').click();
-            }
-        });
-    }
+    let myDropzone = null;
     
     // Character count for text input
     if (textArea) {
@@ -441,61 +511,223 @@ document.addEventListener('DOMContentLoaded', function() {
         textArea.dispatchEvent(new Event('input'));
     }
     
-    // File upload handling
-    fileInput.addEventListener('change', function(e) {
-        console.log('File input changed', e.target.files);
-        const file = e.target.files[0];
-        if (file) {
-            console.log('File selected:', file.name, file.size);
-            showFilePreview(file);
-        } else {
-            console.log('No file selected');
+    // Initialize DropzoneJS only when file upload tab is active
+    function initializeDropzone() {
+        if (myDropzone) {
+            myDropzone.destroy();
         }
-    });
-    
-    // Drag and drop functionality
-    dropzone.addEventListener('dragover', function(e) {
-        e.preventDefault();
-        this.classList.add('border-success');
-        this.style.backgroundColor = 'var(--bs-success-bg-subtle)';
-    });
-    
-    dropzone.addEventListener('dragleave', function(e) {
-        e.preventDefault();
-        this.classList.remove('border-success');
-        this.style.backgroundColor = '';
-    });
-    
-    dropzone.addEventListener('drop', function(e) {
-        e.preventDefault();
-        this.classList.remove('border-success');
-        this.style.backgroundColor = '';
         
-        const files = e.dataTransfer.files;
-        if (files.length > 0) {
-            console.log('File dropped:', files[0].name);
-            
-            // Try different approaches for setting files
-            try {
-                // Method 1: Try DataTransfer
-                const dt = new DataTransfer();
-                dt.items.add(files[0]);
-                fileInput.files = dt.files;
-                console.log('DataTransfer method worked');
-            } catch (e) {
-                console.log('DataTransfer method failed:', e);
-                // Method 2: Trigger file input programmatically
-                // We'll still show preview even if we can't set the input
+        const caseNameField = document.getElementById('case_name');
+        
+        myDropzone = new Dropzone("#dropzone-upload", {
+            url: "<?= $upload_ajax_url ?>",
+            method: 'POST',
+            paramName: 'file',
+            maxFiles: 1,
+            maxFilesize: <?= (int)get_setting('max_file_size', '10485760') / 1024 / 1024 ?>, // Convert to MB
+            acceptedFiles: '.pdf,.txt,application/pdf,text/plain',
+            addRemoveLinks: true,
+            dictDefaultMessage: '',
+            dictRemoveFile: 'Remove file',
+            dictFileTooBig: 'File is too large ({{filesize}}MB). Maximum allowed: {{maxFilesize}}MB',
+            dictInvalidFileType: 'Only PDF and text files are allowed',
+            dictMaxFilesExceeded: 'Only one file can be uploaded at a time',
+            autoProcessQueue: false,
+            previewsContainer: ".dropzone-previews",
+            clickable: true,
+            previewTemplate: `
+                <div class="dz-preview dz-file-preview mb-3">
+                    <div class="card border border-translucent">
+                        <div class="card-body p-3">
+                            <div class="d-flex align-items-center">
+                                <div class="me-3">
+                                    <div class="avatar avatar-2xl">
+                                        <div class="avatar-name rounded-3 bg-soft-secondary text-dark d-flex align-items-center justify-content-center">
+                                            <i class="fas fa-file-pdf text-body-quaternary fs-2"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <h6 class="mb-1 text-truncate"><span data-dz-name></span></h6>
+                                    <div class="mb-2">
+                                        <small class="text-body-tertiary"><span data-dz-size></span></small>
+                                    </div>
+                                    <div class="progress mt-2" style="height: 2px;">
+                                        <div class="progress-bar bg-primary" role="progressbar" data-dz-uploadprogress></div>
+                                    </div>
+                                    <div class="dz-error-message text-danger small mt-2" style="display: none;"></div>
+                                    <div class="dz-success-mark text-success mt-2" style="display: none;">
+                                        <small><i class="fas fa-check-circle me-1"></i>Upload complete</small>
+                                    </div>
+                                </div>
+                                <div class="ms-2">
+                                    <button type="button" class="btn btn-close" data-dz-remove aria-label="Remove file"></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `,
+            sending: function(file, xhr, formData) {
+                // Add CSRF token
+                formData.append('csrf_token', document.querySelector('input[name="csrf_token"]').value);
+                
+                // Add case name
+                const caseName = caseNameField ? caseNameField.value.trim() : '';
+                if (!caseName) {
+                    this.cancelUpload(file);
+                    showAlert('Please enter a case name first', 'danger');
+                    return false;
+                }
+                formData.append('case_name', caseName);
+                
+                // Show loading state
+                showLoading('uploadBtn', 'Uploading...');
+            },
+            success: function(file, response) {
+                console.log('Upload success:', response);
+                hideLoading('uploadBtn', '<i class="fas fa-magic me-2"></i>Analyze Judgment');
+                
+                if (response.success) {
+                    // Show success message
+                    showAlert(response.message + ' You can now proceed to analysis.', 'success');
+                    
+                    // Add proceed to analysis button to the file preview
+                    const proceedBtn = document.createElement('div');
+                    proceedBtn.className = 'mt-2 text-center';
+                    proceedBtn.innerHTML = `
+                        <a href="${response.redirect_url}" class="btn btn-sm btn-subtle-success">
+                            <i class="fas fa-magic me-1"></i>
+                            Proceed to Analysis
+                        </a>
+                    `;
+                    
+                    const preview = file.previewElement.querySelector('.alert');
+                    if (preview) {
+                        preview.appendChild(proceedBtn);
+                    }
+                    
+                    // Show success mark
+                    const successMark = file.previewElement.querySelector('.dz-success-mark');
+                    if (successMark) {
+                        successMark.style.display = 'block';
+                    }
+                    
+                    // Store the redirect URL for the form submit button
+                    window.analysisRedirectUrl = response.redirect_url;
+                    
+                    // Update the submit button to redirect to analysis
+                    const submitBtn = document.getElementById('uploadBtn');
+                    if (submitBtn) {
+                        submitBtn.innerHTML = '<i class="fas fa-magic me-2"></i>Proceed to Analysis';
+                        submitBtn.onclick = function(e) {
+                            e.preventDefault();
+                            window.location.href = response.redirect_url;
+                        };
+                    }
+                } else {
+                    showAlert(response.error || 'Upload failed', 'danger');
+                }
+            },
+            error: function(file, errorMessage) {
+                console.error('Upload error:', errorMessage);
+                hideLoading('uploadBtn', '<i class="fas fa-magic me-2"></i>Analyze Judgment');
+                
+                let message = 'Upload failed';
+                if (typeof errorMessage === 'string') {
+                    message = errorMessage;
+                } else if (errorMessage && errorMessage.error) {
+                    message = errorMessage.error;
+                }
+                
+                showAlert(message, 'danger');
+            },
+            addedfile: function(file) {
+                // Create the preview element using the template
+                var node = document.createElement("div");
+                node.innerHTML = this.options.previewTemplate.trim();
+                var previewElement = node.firstChild;
+                
+                // Set up the preview element
+                file.previewElement = previewElement;
+                previewElement.querySelector("[data-dz-name]").textContent = file.name;
+                
+                // Format file size as plain text
+                var fileSize = file.size;
+                var sizeText = '';
+                if (fileSize < 1024) {
+                    sizeText = fileSize + ' B';
+                } else if (fileSize < 1024 * 1024) {
+                    sizeText = Math.round(fileSize / 1024 * 10) / 10 + ' KB';
+                } else if (fileSize < 1024 * 1024 * 1024) {
+                    sizeText = Math.round(fileSize / (1024 * 1024) * 10) / 10 + ' MB';
+                } else {
+                    sizeText = Math.round(fileSize / (1024 * 1024 * 1024) * 10) / 10 + ' GB';
+                }
+                previewElement.querySelector("[data-dz-size]").textContent = sizeText;
+                
+                // Add to preview container
+                var previewContainer = document.querySelector(this.options.previewsContainer);
+                if (previewContainer) {
+                    previewContainer.appendChild(previewElement);
+                }
+                
+                // Set up remove link
+                var removeLink = previewElement.querySelector("[data-dz-remove]");
+                if (removeLink) {
+                    removeLink.addEventListener("click", (e) => {
+                        e.preventDefault();
+                        this.removeFile(file);
+                    });
+                }
+                
+                // Remove existing files if maxFiles is 1
+                if (this.files.length > this.options.maxFiles) {
+                    this.removeFile(this.files[0]);
+                }
             }
-            
-            showFilePreview(files[0]);
+        });
+    }
+    
+    // Initialize dropzone if file tab is active
+    if (document.getElementById('upload-file').classList.contains('active')) {
+        initializeDropzone();
+    }
+    
+    // Handle tab switching
+    document.addEventListener('shown.bs.tab', function(e) {
+        if (e.target.getAttribute('data-bs-target') === '#upload-file') {
+            initializeDropzone();
         }
     });
     
-    // Form submission
+    // Handle form submission for text uploads
     const form = document.querySelector('form');
     form.addEventListener('submit', function(e) {
-        showLoading('uploadBtn', 'Analyzing...');
+        const uploadType = document.getElementById('upload_type').value;
+        
+        if (uploadType === 'file') {
+            e.preventDefault();
+            
+            // Validate case name
+            const caseName = document.getElementById('case_name').value.trim();
+            if (!caseName) {
+                showAlert('Please enter a case name', 'danger');
+                return false;
+            }
+            
+            // Check if file is added
+            if (!myDropzone || myDropzone.files.length === 0) {
+                showAlert('Please select a file to upload', 'danger');
+                return false;
+            }
+            
+            // Process the queue
+            myDropzone.processQueue();
+        } else {
+            // Text upload - use normal form submission
+            showLoading('uploadBtn', 'Processing...');
+        }
     });
 });
 
@@ -503,60 +735,20 @@ function setUploadType(type) {
     document.getElementById('upload_type').value = type;
 }
 
-function showFilePreview(file) {
-    console.log('showFilePreview called with file:', file);
-    
-    // Create the preview HTML dynamically since the static elements aren't being found
-    const previewHTML = `
-        <div class="alert alert-subtle-success border-0">
-            <div class="d-flex align-items-center">
-                <i class="fas fa-file-pdf text-danger fs-4 me-3"></i>
-                <div>
-                    <h6 class="alert-heading mb-1" id="file-name-display">${file.name}</h6>
-                    <p class="mb-0" id="file-info-display">${formatBytes(file.size)} • ${file.type || 'application/pdf'}</p>
-                </div>
-                <button type="button" class="btn-close ms-auto" onclick="clearFileUpload()"></button>
-            </div>
+function showAlert(message, type = 'info') {
+    // Create alert element with Phoenix subtle styling
+    const alertHtml = `
+        <div class="alert alert-subtle-${type} alert-dismissible fade show border-0 mt-3" role="alert">
+            ${message}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         </div>
     `;
     
-    // Find or create the preview container
-    let preview = document.getElementById('file-preview');
-    
-    if (!preview) {
-        console.log('Preview container not found, creating it...');
-        // Find the file input area and add preview after it
-        const fileInputContainer = document.getElementById('judgment_file');
-        if (fileInputContainer && fileInputContainer.parentElement) {
-            preview = document.createElement('div');
-            preview.id = 'file-preview';
-            preview.className = 'mt-3';
-            fileInputContainer.parentElement.appendChild(preview);
-        }
+    // Insert after the page header
+    const pageHeader = document.querySelector('.row.align-items-center');
+    if (pageHeader) {
+        pageHeader.insertAdjacentHTML('afterend', alertHtml);
     }
-    
-    if (preview) {
-        console.log('Updating preview content');
-        preview.innerHTML = previewHTML;
-        preview.classList.remove('d-none');
-        console.log('Preview should now be visible');
-    } else {
-        console.error('Could not create preview container');
-    }
-}
-
-function clearFileUpload() {
-    document.getElementById('judgment_file').value = '';
-    document.getElementById('file-preview').classList.add('d-none');
-}
-
-function formatBytes(bytes, decimals = 2) {
-    if (bytes === 0) return '0 Bytes';
-    const k = 1024;
-    const dm = decimals < 0 ? 0 : decimals;
-    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
 }
 </script>
 

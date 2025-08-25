@@ -7,6 +7,7 @@ declare(strict_types=1);
 require_once __DIR__ . '/../app/auth.php';
 require_once __DIR__ . '/../app/security.php';
 require_once __DIR__ . '/../app/helpers.php';
+require_once __DIR__ . '/../app/lib/Parsedown.php';
 
 // Start session and require login
 start_session();
@@ -125,6 +126,79 @@ function parseAnalysisFromText(string $analysis_text): array
 }
 
 /**
+ * Convert markdown content to safe HTML
+ */
+function convertMarkdownToHtml(string $markdown): string
+{
+    // Pre-process the markdown to fix common structural issues
+    $markdown = preprocessMarkdown($markdown);
+    
+    $parsedown = new Parsedown();
+    $parsedown->setSafeMode(true); // Enable safe mode to prevent XSS
+    $parsedown->setMarkupEscaped(true); // Escape HTML in markdown
+    
+    // Convert markdown to HTML
+    $html = $parsedown->text($markdown);
+    
+    // Post-process to fix any structural issues
+    $html = postprocessHtml($html);
+    
+    // Additional safety: strip any potentially dangerous tags that might have slipped through
+    $allowed_tags = '<h1><h2><h3><h4><h5><h6><p><br><strong><b><em><i><ul><ol><li><blockquote><code><pre><div>';
+    return strip_tags($html, $allowed_tags);
+}
+
+/**
+ * Pre-process markdown to fix structural issues
+ */
+function preprocessMarkdown(string $markdown): string
+{
+    // Normalize line endings
+    $markdown = str_replace(["\r\n", "\r"], "\n", $markdown);
+    
+    // Ensure headers are on their own lines with proper spacing
+    $markdown = preg_replace('/^(#+\s+.*?)$/m', "\n$1\n", $markdown);
+    
+    // Ensure list items don't contain headers by separating them
+    $markdown = preg_replace('/^(\s*[-*+]\s+.*?)(#+\s+.*?)$/m', "$1\n\n$2", $markdown);
+    
+    // Fix cases where headers appear after list items without proper spacing
+    $markdown = preg_replace('/^(\s*[-*+]\s+.*?)$/m', '$1', $markdown);
+    $markdown = preg_replace('/([-*+]\s+.*?)\n(#+\s+)/m', "$1\n\n$2", $markdown);
+    
+    // Clean up excessive whitespace but preserve paragraph breaks
+    $markdown = preg_replace('/\n{3,}/', "\n\n", $markdown);
+    
+    return trim($markdown);
+}
+
+/**
+ * Post-process HTML to fix structural issues
+ */
+function postprocessHtml(string $html): string
+{
+    // Fix headers that ended up inside list items
+    $html = preg_replace('/<li>([^<]*?)<(h[1-6])([^>]*?)>(.*?)<\/\2>(.*?)<\/li>/s', 
+                        '<li>$1</li></ul><$2$3>$4</$2><ul><li>$5</li>', $html);
+    
+    // Clean up empty list items
+    $html = preg_replace('/<li>\s*<\/li>/', '', $html);
+    
+    // Clean up empty lists
+    $html = preg_replace('/<ul>\s*<\/ul>/', '', $html);
+    $html = preg_replace('/<ol>\s*<\/ol>/', '', $html);
+    
+    // Fix consecutive lists (merge them)
+    $html = preg_replace('/<\/ul>\s*<ul>/', '', $html);
+    $html = preg_replace('/<\/ol>\s*<ol>/', '', $html);
+    
+    // Ensure proper spacing around headers
+    $html = preg_replace('/(<\/[uo]l>)(<h[1-6])/i', '$1<div class="section-break"></div>$2', $html);
+    
+    return $html;
+}
+
+/**
  * Get section display configuration
  */
 function getSectionConfig(): array
@@ -215,10 +289,10 @@ $page_title = 'Analysis Results - Appeal Prospect MVP';
 ?>
 <?php include __DIR__ . '/../app/templates/header.php'; ?>
 
-<div class="container-fluid px-0">
+<div class="container px-0">
     
     <div class="content">
-        <div class="container-fluid px-6 py-4">
+        <div class="container px-6 py-4">
             
             <?php if (!empty($errors)): ?>
                 <!-- Error Display -->
@@ -255,7 +329,7 @@ $page_title = 'Analysis Results - Appeal Prospect MVP';
                 <div class="row align-items-center justify-content-between py-2 pe-0 mb-4">
                     <div class="col-auto">
                         <nav aria-label="breadcrumb">
-                            <ol class="breadcrumb mb-2">
+                            <ol class="breadcrumb mb-4">
                                 <li class="breadcrumb-item"><a href="/index.php">Home</a></li>
                                 <li class="breadcrumb-item"><a href="<?= app_url('my-cases.php') ?>">My Cases</a></li>
                                 <li class="breadcrumb-item active" aria-current="page">Analysis Results</li>
@@ -275,7 +349,7 @@ $page_title = 'Analysis Results - Appeal Prospect MVP';
                                 <i class="fas fa-arrow-left me-2"></i>
                                 Back to Cases
                             </a>
-                            <a href="/analyze.php?case_id=<?= $case_id ?>" class="btn btn-subtle-primary">
+                            <a href="<?= app_url('analyze.php') ?>?case_id=<?= $case_id ?>" class="btn btn-subtle-primary">
                                 <i class="fas fa-redo me-2"></i>
                                 Re-analyze
                             </a>
@@ -291,7 +365,7 @@ $page_title = 'Analysis Results - Appeal Prospect MVP';
                 <div class="row mb-4">
                     <div class="col-12">
                         <div class="card shadow-sm">
-                            <div class="card-header bg-primary text-white">
+                            <div class="card-header bg-body">
                                 <h5 class="card-title mb-0">
                                     <i class="fas fa-chart-pie me-2"></i>
                                     Analysis Overview
@@ -366,7 +440,7 @@ $page_title = 'Analysis Results - Appeal Prospect MVP';
                                 <div class="collapse show" id="collapse-<?= $section_key ?>">
                                     <div class="card-body">
                                         <div class="analysis-content">
-                                            <?= nl2br(htmlspecialchars(trim($content))) ?>
+                                            <?= convertMarkdownToHtml(trim($content)) ?>
                                         </div>
                                     </div>
                                 </div>
@@ -385,7 +459,7 @@ $page_title = 'Analysis Results - Appeal Prospect MVP';
                                 </div>
                                 <div class="card-body">
                                     <div class="analysis-content">
-                                        <?= nl2br(htmlspecialchars($case_data['analysis_result'] ?? 'No analysis results available.')) ?>
+                                        <?= convertMarkdownToHtml($case_data['analysis_result'] ?? 'No analysis results available.') ?>
                                     </div>
                                 </div>
                             </div>
@@ -504,8 +578,137 @@ $page_title = 'Analysis Results - Appeal Prospect MVP';
     font-size: 0.95rem;
 }
 
+/* Headers in analysis content */
+.analysis-content h1,
+.analysis-content h2,
+.analysis-content h3,
+.analysis-content h4,
+.analysis-content h5,
+.analysis-content h6 {
+    color: var(--phoenix-emphasis-color);
+    font-weight: 600;
+    margin-top: 1.5rem;
+    margin-bottom: 0.75rem;
+}
+
+.analysis-content h1 { font-size: 1.5rem; }
+.analysis-content h2 { font-size: 1.35rem; }
+.analysis-content h3 { font-size: 1.2rem; }
+.analysis-content h4 { font-size: 1.1rem; }
+.analysis-content h5 { font-size: 1rem; }
+.analysis-content h6 { font-size: 0.95rem; }
+
+/* First header has no top margin */
+.analysis-content h1:first-child,
+.analysis-content h2:first-child,
+.analysis-content h3:first-child,
+.analysis-content h4:first-child,
+.analysis-content h5:first-child,
+.analysis-content h6:first-child {
+    margin-top: 0;
+}
+
+/* Paragraphs */
 .analysis-content p {
     margin-bottom: 1rem;
+    text-align: justify;
+}
+
+.analysis-content p:last-child {
+    margin-bottom: 0;
+}
+
+/* Emphasis */
+.analysis-content strong,
+.analysis-content b {
+    font-weight: 600;
+    color: var(--phoenix-emphasis-color);
+}
+
+.analysis-content em,
+.analysis-content i {
+    font-style: italic;
+    color: var(--phoenix-secondary-color);
+}
+
+/* Lists */
+.analysis-content ul,
+.analysis-content ol {
+    margin-bottom: 1rem;
+    padding-left: 1.5rem;
+}
+
+.analysis-content li {
+    margin-bottom: 0.5rem;
+    line-height: 1.5;
+}
+
+.analysis-content li:last-child {
+    margin-bottom: 0;
+}
+
+.analysis-content ul {
+    list-style-type: disc;
+}
+
+.analysis-content ul ul {
+    list-style-type: circle;
+    margin-top: 0.25rem;
+}
+
+.analysis-content ol {
+    list-style-type: decimal;
+}
+
+/* Blockquotes */
+.analysis-content blockquote {
+    border-left: 4px solid var(--phoenix-primary);
+    background: var(--phoenix-primary-bg-subtle);
+    margin: 1rem 0;
+    padding: 0.75rem 1rem;
+    font-style: italic;
+}
+
+.analysis-content blockquote p {
+    margin-bottom: 0.5rem;
+}
+
+.analysis-content blockquote p:last-child {
+    margin-bottom: 0;
+}
+
+/* Code */
+.analysis-content code {
+    background: var(--phoenix-gray-100);
+    border: 1px solid var(--phoenix-gray-200);
+    border-radius: 3px;
+    font-family: var(--phoenix-font-monospace);
+    font-size: 0.85em;
+    padding: 0.2em 0.4em;
+}
+
+.analysis-content pre {
+    background: var(--phoenix-gray-100);
+    border: 1px solid var(--phoenix-gray-200);
+    border-radius: 6px;
+    font-family: var(--phoenix-font-monospace);
+    font-size: 0.85rem;
+    line-height: 1.4;
+    margin: 1rem 0;
+    overflow-x: auto;
+    padding: 1rem;
+}
+
+.analysis-content pre code {
+    background: none;
+    border: none;
+    padding: 0;
+}
+
+/* Section breaks */
+.analysis-content .section-break {
+    margin: 1rem 0;
+    height: 0;
 }
 
 @media print {
@@ -520,6 +723,10 @@ $page_title = 'Analysis Results - Appeal Prospect MVP';
     .card {
         break-inside: avoid;
         page-break-inside: avoid;
+    }
+    
+    .analysis-content {
+        font-size: 0.9rem;
     }
 }
 </style>

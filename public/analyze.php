@@ -161,33 +161,10 @@ function processAnalysis(array $case_data, array &$status): ?array
 ?>
 <?php include __DIR__ . '/../app/templates/header.php'; ?>
 
-<div class="container-fluid px-0">
+<div class="container px-0">
     
     <div class="content">
-        <div class="container-fluid px-6 py-4">
-            
-            <!-- Page Header -->
-            <div class="row align-items-center justify-content-between py-2 pe-0 mb-4">
-                <div class="col-auto">
-                    <h2 class="text-body-emphasis mb-0">
-                        <i class="fas fa-magic me-2 text-primary"></i>
-                        AI Analysis
-                    </h2>
-                    <p class="text-body-tertiary mb-0">
-                        <?php if ($case_data): ?>
-                            Analyzing: <?= htmlspecialchars($case_data['case_name']) ?>
-                        <?php else: ?>
-                            Process legal judgment for appeal prospects
-                        <?php endif; ?>
-                    </p>
-                </div>
-                <div class="col-auto">
-                    <a href="<?= app_url('upload.php') ?>" class="btn btn-outline-secondary">
-                        <i class="fas fa-upload me-2"></i>
-                        Upload New
-                    </a>
-                </div>
-            </div>
+        <div class="container px-6 py-4">
 
             <?php if (!empty($errors)): ?>
                 <!-- Error Messages -->
@@ -298,7 +275,7 @@ function processAnalysis(array $case_data, array &$status): ?array
                     <!-- Auto Redirect Script -->
                     <script>
                     setTimeout(function() {
-                        window.location.href = '/results.php?case_id=<?= $analysis_result['case_id'] ?>';
+                        window.location.href = '<?= app_url('results.php') ?>?case_id=<?= $analysis_result['case_id'] ?>';
                     }, 3000);
                     </script>
                     
@@ -353,11 +330,31 @@ function processAnalysis(array $case_data, array &$status): ?array
                 <div class="row justify-content-center">
                     <div class="col-lg-8">
                         <div class="card shadow-sm">
-                            <div class="card-header bg-primary text-white">
-                                <h5 class="card-title mb-0">
-                                    <i class="fas fa-file-alt me-2"></i>
-                                    Ready for Analysis
-                                </h5>
+                            <div class="card-header bg-body">
+                                <div class="row justify-content-center justify-content-between">
+                                <div class="col-auto">
+                                    <h5 class="card-title mb-2">
+                                        <i class="fas fa-file-alt me-2"></i>
+                                        Ready for Analysis
+                                    </h5>
+                                    <p class="text-body-tertiary mb-0">
+                                        <?php if ($case_data): ?>
+                                            Analyzing: <?= htmlspecialchars($case_data['case_name']) ?>
+                                        <?php else: ?>
+                                            Process legal judgment for appeal prospects
+                                        <?php endif; ?>
+                                    </p>
+                                </div>
+                                <div class="col-auto">
+                                    <a href="<?= app_url('upload.php') ?>" class="btn btn-outline-secondary">
+                                        <i class="fas fa-upload me-2"></i>
+                                        Upload New
+                                    </a>
+                                </div>
+                            </div>
+
+
+
                             </div>
                             <div class="card-body text-center p-5">
                                 <div class="mb-4">
@@ -370,13 +367,13 @@ function processAnalysis(array $case_data, array &$status): ?array
                                 
                                 <div class="row g-3 mb-4">
                                     <div class="col-md-6">
-                                        <div class="bg-body-tertiary rounded p-3">
+                                        <div class="bg-body rounded p-3">
                                             <small class="text-body-secondary d-block">Upload Date</small>
                                             <strong><?= date('F j, Y', strtotime($case_data['created_at'])) ?></strong>
                                         </div>
                                     </div>
                                     <div class="col-md-6">
-                                        <div class="bg-body-tertiary rounded p-3">
+                                        <div class="bg-body rounded p-3">
                                             <small class="text-body-secondary d-block">Text Length</small>
                                             <strong><?= number_format(strlen($case_data['judgment_text'])) ?> characters</strong>
                                         </div>

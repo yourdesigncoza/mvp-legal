@@ -100,10 +100,10 @@ $page_title = 'My Cases - Appeal Prospect MVP';
 ?>
 <?php include __DIR__ . '/../app/templates/header.php'; ?>
 
-<div class="container-fluid px-0">
+<div class="container px-0">
     
     <div class="content">
-        <div class="container-fluid px-6 py-4">
+        <div class="container px-6 py-4">
             
             <!-- Page Header -->
             <div class="row align-items-center justify-content-between py-2 pe-0 mb-4">
@@ -348,7 +348,7 @@ $page_title = 'My Cases - Appeal Prospect MVP';
                     <div class="card-body p-0">
                         <div class="table-responsive">
                             <table class="table table-hover mb-0">
-                                <thead class="bg-body-tertiary">
+                                <thead class="bg-body">
                                     <tr>
                                         <th width="30">
                                             <input class="form-check-input" type="checkbox" id="headerSelectAll" />
@@ -364,7 +364,7 @@ $page_title = 'My Cases - Appeal Prospect MVP';
                                 <tbody>
                                     <?php foreach ($cases as $case): ?>
                                         <tr>
-                                            <td>
+                                            <td class="ps-2">
                                                 <input class="form-check-input case-checkbox" type="checkbox" value="<?= $case['id'] ?>" />
                                             </td>
                                             <td>
@@ -379,7 +379,7 @@ $page_title = 'My Cases - Appeal Prospect MVP';
                                                     <div>
                                                         <h6 class="mb-1">
                                                             <?php if ($case['has_analysis']): ?>
-                                                                <a href="/results.php?case_id=<?= $case['id'] ?>" class="text-decoration-none">
+                                                                <a href="<?= app_url('results.php') ?>?case_id=<?= $case['id'] ?>" class="text-decoration-none">
                                                                     <?= htmlspecialchars($case['case_name']) ?>
                                                                 </a>
                                                             <?php else: ?>
@@ -425,15 +425,16 @@ $page_title = 'My Cases - Appeal Prospect MVP';
                                                 <?php endif; ?>
                                             </td>
                                             <td>
-                                                <div class="dropdown">
-                                                    <button class="btn btn-sm btn-subtle-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
-                                                        <i class="fas fa-ellipsis-v"></i>
-                                                    </button>
+                                                <div class="d-flex gap-1 align-items-center">
+                                                    <div class="dropdown">
+                                                        <button class="btn btn-sm btn-subtle-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                                                            <i class="fas fa-ellipsis-v"></i>
+                                                        </button>
                                                     <ul class="dropdown-menu">
                                                         
                                                         <?php if ($case['status'] === 'analyzed' && $case['has_analysis']): ?>
                                                             <li>
-                                                                <a class="dropdown-item" href="/results.php?case_id=<?= $case['id'] ?>">
+                                                                <a class="dropdown-item" href="<?= app_url('results.php') ?>?case_id=<?= $case['id'] ?>">
                                                                     <i class="fas fa-eye me-2"></i>
                                                                     View Results
                                                                 </a>
@@ -442,28 +443,28 @@ $page_title = 'My Cases - Appeal Prospect MVP';
                                                         
                                                         <?php if ($case['status'] === 'uploaded'): ?>
                                                             <li>
-                                                                <a class="dropdown-item" href="/analyze.php?case_id=<?= $case['id'] ?>">
+                                                                <a class="dropdown-item" href="<?= app_url('analyze.php') ?>?case_id=<?= $case['id'] ?>">
                                                                     <i class="fas fa-magic me-2"></i>
                                                                     Start Analysis
                                                                 </a>
                                                             </li>
                                                         <?php elseif ($case['status'] === 'analyzing'): ?>
                                                             <li>
-                                                                <a class="dropdown-item" href="/analyze.php?case_id=<?= $case['id'] ?>">
+                                                                <a class="dropdown-item" href="<?= app_url('analyze.php') ?>?case_id=<?= $case['id'] ?>">
                                                                     <i class="fas fa-spinner me-2"></i>
                                                                     View Progress
                                                                 </a>
                                                             </li>
                                                         <?php elseif ($case['status'] === 'failed'): ?>
                                                             <li>
-                                                                <a class="dropdown-item" href="/analyze.php?case_id=<?= $case['id'] ?>">
+                                                                <a class="dropdown-item" href="<?= app_url('analyze.php') ?>?case_id=<?= $case['id'] ?>">
                                                                     <i class="fas fa-redo me-2"></i>
                                                                     Retry Analysis
                                                                 </a>
                                                             </li>
                                                         <?php else: ?>
                                                             <li>
-                                                                <a class="dropdown-item" href="/analyze.php?case_id=<?= $case['id'] ?>">
+                                                                <a class="dropdown-item" href="<?= app_url('analyze.php') ?>?case_id=<?= $case['id'] ?>">
                                                                     <i class="fas fa-redo me-2"></i>
                                                                     Re-analyze
                                                                 </a>
@@ -478,6 +479,7 @@ $page_title = 'My Cases - Appeal Prospect MVP';
                                                             </button>
                                                         </li>
                                                     </ul>
+                                                    </div>
                                                 </div>
                                             </td>
                                         </tr>

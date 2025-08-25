@@ -272,7 +272,7 @@ function delete_case(int $case_id, int $user_id, bool $admin_access = false): bo
             $params[] = $user_id;
         }
         
-        return db_execute($sql, $params);
+        return db_execute($sql, $params) > 0;
         
     } catch (Exception $e) {
         error_log("Failed to delete case: " . $e->getMessage());
@@ -430,7 +430,7 @@ function format_case_for_display(array $case_data): array
     
     // Add computed fields
     $case_data['total_tokens'] = ($case_data['token_in'] ?? 0) + ($case_data['token_out'] ?? 0);
-    $case_data['has_analysis'] = !empty($case_data['analysis_result']);
+    $case_data['has_analysis'] = !empty($case_data['analysis_result']) || !empty($case_data['has_results']);
     $case_data['has_citations'] = !empty($case_data['citations_parsed']);
     $case_data['document_length'] = strlen($case_data['judgment_text'] ?? '');
     

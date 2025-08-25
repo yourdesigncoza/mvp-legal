@@ -425,7 +425,7 @@ class GPTHandler
                 $case_id
             ];
             
-            return db_execute($sql, $params);
+            return db_execute($sql, $params) > 0;
             
         } catch (Exception $e) {
             error_log("Failed to save analysis to database: " . $e->getMessage());

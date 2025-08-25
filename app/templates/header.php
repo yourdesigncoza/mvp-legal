@@ -20,14 +20,17 @@
     <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@300;400;600;700;800;900&amp;display=swap" rel="stylesheet">
     
     <!-- Icons -->
-    <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.8/css/line.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <!-- Phoenix Bootstrap CSS -->
     <link href="<?= asset_url('assets/css/phoenix-bootstrap.css') ?>" type="text/css" rel="stylesheet">
     
-    <!-- Bootstrap 5.3 -->
-    <!-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"> -->
+    <!-- DropzoneJS CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.3/dropzone.min.css" type="text/css" />
+    
+    <!-- Phoenix Bootstrap CSS -->
+    <link href="<?= asset_url('assets/css/app.css') ?>" type="text/css" rel="stylesheet">
+
 </head>
 
 <body>
@@ -114,7 +117,7 @@
 
     <!-- Main Content -->
     <main class="main" id="top">
-        <div class="container-fluid px-0">
+        <div class="container px-0">
             <?php
             // Display flash messages
             if (isset($_SESSION['flash_message'])): 

@@ -67,7 +67,7 @@ $page_title = 'Login - Appeal Prospect MVP';
 ?>
 <?php include __DIR__ . '/../app/templates/header.php'; ?>
 
-<div class="container-fluid">
+<div class="container">
     <div class="row flex-center min-vh-100 py-5">
         <div class="col-sm-10 col-md-8 col-lg-5 col-xl-4 col-xxl-3">
             

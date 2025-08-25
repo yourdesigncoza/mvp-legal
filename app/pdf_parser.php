@@ -383,11 +383,7 @@ class PDFParser
                 $data['judgment_text']
             ];
             
-            if (db_execute($sql, $params)) {
-                return db_last_insert_id();
-            }
-            
-            return null;
+            return db_insert($sql, $params);
             
         } catch (Exception $e) {
             error_log("Failed to save case to database: " . $e->getMessage());

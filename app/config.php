@@ -34,7 +34,8 @@ define('ALLOWED_MIME_TYPES', [
 ]);
 
 // API Configuration
-define('OPENAI_MODEL', 'gpt-4o-mini');
+define('OPENAI_MODEL', 'gpt-4o-2024-08-06');// gpt-4o
+// define('OPENAI_MODEL', 'gpt-4o-mini-2024-07-18');// gpt-4o-mini
 define('OPENAI_MAX_TOKENS', 4000);
 define('OPENAI_TEMPERATURE', 0.1);
 
