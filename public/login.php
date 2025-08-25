@@ -74,7 +74,7 @@ $page_title = 'Login - Appeal Prospect MVP';
             <!-- Logo/Brand -->
             <div class="text-center mb-7">
                 <a class="d-flex flex-center text-decoration-none mb-4" href="<?= app_url('index.php') ?>">
-                    <div class="d-flex align-items-center fw-bolder fs-2 d-inline-block text-primary">
+                    <div class="d-flex align-items-center fw-bolder fs-6 d-inline-block text-primary">
                         <i class="fas fa-gavel me-2"></i>
                         Appeal Prospect
                     </div>
