@@ -35,10 +35,35 @@ function url_safe(string $value): string {
 }
 
 /**
+ * Get the application base URL dynamically
+ * Works in any environment without configuration
+ */
+function get_base_url(): string {
+    // Use configured APP_URL if available
+    if (defined('APP_URL') && APP_URL) {
+        return APP_URL;
+    }
+    
+    // Dynamic fallback that works in any environment
+    $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
+    $host = $_SERVER['HTTP_HOST'] ?? 'localhost';
+    $path = dirname($_SERVER['SCRIPT_NAME'] ?? '');
+    
+    // Remove /public from path since we're in the public folder
+    $path = str_replace('/public', '', $path);
+    
+    // Ensure path starts with / and doesn't end with /
+    $path = '/' . trim($path, '/');
+    if ($path === '/') $path = '';
+    
+    return $protocol . '://' . $host . $path;
+}
+
+/**
  * Generate asset URL with proper base path
  */
 function asset_url(string $path): string {
-    $base_url = defined('APP_URL') ? APP_URL : 'http://localhost/mvp-legal';
+    $base_url = get_base_url();
     return rtrim($base_url, '/') . '/' . ltrim($path, '/');
 }
 
@@ -46,7 +71,7 @@ function asset_url(string $path): string {
  * Generate application URL with proper base path
  */
 function app_url(string $path = ''): string {
-    $base_url = defined('APP_URL') ? APP_URL : 'http://localhost/mvp-legal';
+    $base_url = get_base_url();
     if (empty($path)) {
         return $base_url;
     }
