@@ -131,7 +131,7 @@ Admin: Login → **Admin Dashboard** → View/Delete.
 
 - `/index.php` (home), `/login.php`, `/register.php`, `/logout.php`
     
-- `/upload.php`, `/analyze.php`, `/results.php?id=…`, `<?= app_url('my-cases.php') ?>`
+- `/upload.php`, `<?= app_url('analyze.php') ?>`, `<?= app_url('results.php') ?>?id=…`, `<?= app_url('my-cases.php') ?>`
     
 - `/admin.php` (admin only), `/seed.php?key=SEED_KEY` (delete after run)
     

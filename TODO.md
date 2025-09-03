@@ -203,7 +203,7 @@
   - Store as JSON in database
   - Display formatted list in results
 
-### 6.3 Analysis Processor (public/analyze.php)
+### 6.3 Analysis Processor (public<?= app_url('analyze.php') ?>)
 - [x] **Processing workflow**: ✅
   - Validate input (PDF or text)
   - Extract/normalize text
@@ -223,7 +223,7 @@
 ## Phase 7: Results Display System
 **Goal**: Show structured 13-section analysis with Phoenix UI
 
-### 7.1 Results Page (public/results.php)
+### 7.1 Results Page (public<?= app_url('results.php') ?>)
 - [x] **Phoenix layout**: ✅
   - Header with case name and date
   - Navigation breadcrumbs
