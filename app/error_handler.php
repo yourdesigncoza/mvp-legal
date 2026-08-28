@@ -50,7 +50,7 @@ class ErrorHandler
             'message' => $message,
             'file' => $file,
             'line' => $line,
-            'user_id' => current_user_id(),
+            'user_id' => self::currentUserId(),
             'request_uri' => $_SERVER['REQUEST_URI'] ?? 'unknown',
             'user_agent' => $_SERVER['HTTP_USER_AGENT'] ?? 'unknown',
             'timestamp' => date('Y-m-d H:i:s')
@@ -79,7 +79,7 @@ class ErrorHandler
             'file' => $exception->getFile(),
             'line' => $exception->getLine(),
             'trace' => $exception->getTraceAsString(),
-            'user_id' => current_user_id(),
+            'user_id' => self::currentUserId(),
             'request_uri' => $_SERVER['REQUEST_URI'] ?? 'unknown',
             'user_agent' => $_SERVER['HTTP_USER_AGENT'] ?? 'unknown',
             'timestamp' => date('Y-m-d H:i:s')
@@ -103,7 +103,7 @@ class ErrorHandler
                 'message' => $error['message'],
                 'file' => $error['file'],
                 'line' => $error['line'],
-                'user_id' => current_user_id(),
+                'user_id' => self::currentUserId(),
                 'request_uri' => $_SERVER['REQUEST_URI'] ?? 'unknown',
                 'timestamp' => date('Y-m-d H:i:s')
             ];
@@ -185,13 +185,23 @@ class ErrorHandler
             'message' => 'Page not found',
             'request_uri' => $_SERVER['REQUEST_URI'] ?? 'unknown',
             'referer' => $_SERVER['HTTP_REFERER'] ?? 'direct',
-            'user_id' => current_user_id(),
+            'user_id' => self::currentUserId(),
             'timestamp' => date('Y-m-d H:i:s')
         ]);
         
         self::showErrorPage('The requested page was not found', 404);
     }
     
+    /**
+     * Safely get current user ID.
+     * Error handling must work even when auth.php hasn't been loaded
+     * (e.g. 404 handler), so guard the function call.
+     */
+    private static function currentUserId(): ?int
+    {
+        return function_exists('current_user_id') ? current_user_id() : null;
+    }
+
     /**
      * Get severity name from error constant
      */
@@ -274,7 +284,7 @@ function log_app_error(string $message, array $context = [], ?Throwable $excepti
         'type' => 'Application Error',
         'message' => $message,
         'context' => $context,
-        'user_id' => current_user_id(),
+        'user_id' => function_exists('current_user_id') ? current_user_id() : null,
         'request_uri' => $_SERVER['REQUEST_URI'] ?? 'unknown',
         'timestamp' => date('Y-m-d H:i:s')
     ];

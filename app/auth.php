@@ -198,6 +198,7 @@ function login_user(string $email, string $password): bool {
     
     // Regenerate session ID for security
     regenerate_secure_session_id();
+    $_SESSION['last_regeneration'] = time(); // avoid re-regenerating on next request
     
     // Set session variables
     $_SESSION['user_id'] = $user['id'];

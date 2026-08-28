@@ -55,6 +55,8 @@ php_value max_input_time 300
 
 # Session Security
 php_value session.cookie_httponly 1
-php_value session.cookie_secure 1
+# NOTE: cookie_secure is intentionally NOT forced here so local HTTP dev works.
+# start_session() in app/auth.php enables it automatically for HTTPS requests.
+# For production HTTPS-only deployments you may set: php_value session.cookie_secure 1
 php_value session.use_only_cookies 1
 php_value session.cookie_samesite Lax
