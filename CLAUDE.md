@@ -217,4 +217,13 @@ The application includes a comprehensive testing suite with 4 test categories:
 - `APP_DEBUG`: Controls error display and logging
 - PHP settings: 256M memory, 300s execution time
 
+## Recent Fixes (Aug 2026 resurrection)
+
+1. **404 crash** — `error_handler.php` called `current_user_id()` without loading `auth.php`, fatally broken for missing pages. Now uses a guarded `ErrorHandler::currentUserId()`. Keep error_handler self-contained.
+2. **Local HTTP logins failed** — root `.htaccess` forced `session.cookie_secure 1`, so cookies got the Secure flag over plain HTTP and browsers dropped them. Removed the flag; `app/auth.php` auto-enables it under HTTPS. Do not re-add it for dev/HTTP environments.
+3. **Double session regeneration after login** — `login_user()` now stamps `$_SESSION['last_regeneration']` to avoid regenerating the session id again on the next request.
+4. **Logs unwritable by Apache** — defined `logs/` write access for the `daemon` group (logging now works).
+
+**Tests note:** the `tests/` directory was removed from the repo (commit `a427030`) but `phpunit.xml` and `run-tests.php` still reference it. Restore from git history before running the suite.
+
 This MVP demonstrates a complete legal tech workflow suitable for production scaling with proper framework integration and infrastructure.

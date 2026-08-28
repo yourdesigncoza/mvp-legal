@@ -19,12 +19,18 @@ This file provides guidance to agents when working with code in this repository.
 **PDFToText Command**: Uses LD_LIBRARY_PATH override to avoid XAMPP library conflicts with system libraries
 **Test Database**: Uses SQLite in-memory for testing, not MySQL - completely different engine
 **Authentication Flow**: check_auth() function automatically redirects - don't add manual redirects after calling it
+**Secure Cookie Flag**: `session.cookie_secure` is intentionally NOT forced in root .htaccess so local HTTP logins work - app/auth.php auto-enables it under HTTPS. Do not re-add php_value session.cookie_secure 1 for HTTP environments (breaks logins in-progress/curl)
+**Error Handler Self-Contained**: error_handler.php must never depend on auth.php functions - use its own ErrorHandler::currentUserId() guard. 404.php only loads error_handler.php
+**Tests Removed**: The tests/ directory was deleted in commit a427030. phpunit.xml and run-tests.php still reference it. Restore from git (git checkout a427030^ -- tests/) or update references before running the suite
+**PHP CLI Path**: XAMPP's PHP is at /opt/lampp/bin/php (not in PATH)
 
 ## Test Commands
 ```bash
-php run-tests.php                    # Run all tests
-php run-tests.php SecurityTest.php   # Run specific test file
-vendor/bin/phpunit --configuration phpunit.xml  # PHPUnit directly
+# NOTE: tests/ directory was removed from the repo (commit a427030).
+# Restore first: git checkout a427030^ -- tests/
+/opt/lampp/bin/php run-tests.php                    # Run all tests
+/opt/lampp/bin/php run-tests.php SecurityTest.php   # Run specific test file
+/opt/lampp/bin/php vendor/bin/phpunit --configuration phpunit.xml  # PHPUnit directly
 ```
 
 ## Required System Dependencies
